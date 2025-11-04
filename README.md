@@ -26,3 +26,5 @@ For <b>Server</b> side:
 <code>
 node server.js
 </code>
+<br>
+You can visit the client side with "localhost:3000", and visit the server side with "localhost:8000"
