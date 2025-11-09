@@ -13,6 +13,10 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+button{
+    cursor: pointer;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -67,7 +71,7 @@ html, body {
 
 .front{
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -143,6 +147,8 @@ html, body {
 }
 
 span.a{
+    cursor: pointer;
+    font-size: 12px;
     text-align: center;
     color: #ffffff;
 }
@@ -221,12 +227,49 @@ p.cheat{
 .arrow-keys .key:nth-child(1) {
     grid-area: up;
 }
+
 .arrow-keys .key:nth-child(2) {
     grid-area: left;
 }
+
 .arrow-keys .key:nth-child(3) {
     grid-area: down;
 }
+
 .arrow-keys .key:nth-child(4) {
     grid-area: right;
+}
+
+.toast {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: top 0.3s ease-in-out;
+    font-size: 16px;
+    text-align: center;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.toast.success {
+    background-color: #4CAF50;
+}
+
+.toast.error {
+    background-color: #f44336;
+}
+
+.toast.warning {
+    background-color: #ff9800;
+}
+
+.toast.show {
+    top: 20px;
 }

@@ -10,12 +10,12 @@
     <body>
         <!-- Game Start Page -->
         <div class="bg-container">
-            <img id="front-bg" class="front-bg-filter" src="img/background.jpg" alt="Game Front Page Background"/>
+            <img id="front-bg" class="" src="img/background.jpg" alt="Game Front Page Background"/>
         </div>
-        <!-- <button id="start-btn">Start</button> -->
+        <button id="start-btn">Start</button>
 
         <!-- Game Login Page -->
-        <!-- <section class="front">
+        <section class="front login">
             <h1 class="front-header">Login</h1>
             <div class="front-container login">
                 <form class="front-form" id="signin-form">
@@ -23,12 +23,12 @@
                     <input id="signin-password" placeholder="Password" type="password" style="margin-bottom: 24px;">
                     <button class="submit-btn" type="submit">Confirm</button>
                 </form>
-                <span class="a"><u>Does not have an account?<br>Register here</u></span>
+                <span id="to-register" class="a"><u>Does not have an account?<br>Register here</u></span>
             </div>
-        </section> -->
+        </section>
 
         <!-- Game Register Page -->
-        <!-- <section class="front">
+        <section class="front register">
             <h1 class="front-header">Registration</h1>
             <div class="front-container register">
                 <form class="front-form" id="register-form">
@@ -37,12 +37,12 @@
                     <input id="register-confirm-password" placeholder="Confirm Password" type="password" style="margin-bottom: 24px;">
                     <button class="submit-btn" type="submit">Confirm</button>
                 </form>
-                <span class="a"><u>Back to login</u></span>
+                <span id="to-login" class="a"><u>Back to login</u></span>
             </div>
-        </section> -->
+        </section>
         
         <!-- Game Instruction Page -->
-        <section class="front">
+        <section class="front instruction">
             <h1 class="front-header">Instruction</h1>
             <div class="front-container instruction">
                 <p>You are a <strong>chef</strong> in the McDonald. </p>
@@ -74,8 +74,23 @@
             </div>
         </section>
 
+        <!-- Toast Message -->
+        <div id="toast" class="toast"></div>
+
         <script src="scripts/ui.js"></script>
         <script src="scripts/registration.js"></script>
         <script src="scripts/authentication.js"></script>
+        <script>
+            $(function() {
+                UI.initialize();
+
+                Authentication.validate(
+                    () => {
+                        FrontPage.hide();
+                    },
+                    () => { FrontPage.show(); }
+                );
+            });
+        </script>
     </body>
 </html>
