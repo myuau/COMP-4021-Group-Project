@@ -1,0 +1,232 @@
+:root{
+    --front-caption-color: #be3418;
+    --front-hover-color: #ec411f;
+    --front-active-color: #862511;
+    --front-btn-bg-color: #ff7401;
+    --front-btn-border-color: #d00202;
+    --front-btn-hover-color: #ff9d00;
+    --front-btn-active-color: #ff4d01;
+    --front-font-color: #efefef;
+}
+
+*{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.bg-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+#front-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-repeat: no-repeat;
+    opacity: 0.7;
+    transition: opacity 1s;
+}
+
+.front-bg-filter{
+    opacity: 0.35 !important;
+}
+
+#start-btn{
+    position: absolute;
+    top: 60%;
+    left: 40%;
+    width: 300px;
+    height: 100px;
+    background-color: var(--front-caption-color);
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: bold;
+    border-radius: 15px 15px;
+    border: solid 2px #000000;
+    transition: background-color 0.5s;
+}
+
+#start-btn:hover{
+    background-color: var(--front-hover-color);
+}
+
+#start-btn:active{
+    background-color: var(--front-active-color);
+}
+
+.front{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.front-header{
+    color: var(--front-caption-color);
+    margin-bottom: 10px;
+    margin-top: 0;
+    font-size: 40px !important;
+}
+
+.front-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--front-caption-color);
+    border: solid 2px #ffffff;
+    padding: 18px 30px;
+    box-sizing: border-box;
+    border-radius: 15px;
+    box-shadow: 2px 2px 4px 1px rgb(169, 169, 169);
+}
+
+.front-container.login{
+    width: 320px;
+    height: 220px;
+}
+
+.front-container.register{
+    width: 380px;
+    height: 250px;
+}
+
+.front-form{
+    margin-bottom: 12px;
+}
+
+.front-form input{
+    width: 100%;
+    margin-bottom: 12px;
+    border: solid 1.5px lightgray;
+    padding: 4px 8px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.submit-btn{
+    display: block;
+    margin: 0 auto;
+    color: white;
+    font-weight: bolder;
+    padding: 5px 18px;
+    font-size: 18px;
+    border-radius: 7px;
+    background-color: var(--front-btn-bg-color);
+    border: solid 1.5px var(--front-btn-border-color);
+    transition: background-color 0.5s;
+}
+
+.submit-btn:hover{
+    background-color: var(--front-btn-hover-color);
+}
+
+.submit-btn:active{
+    background-color: var(--front-btn-active-color);
+}
+
+span.a{
+    text-align: center;
+    color: #ffffff;
+}
+
+.front-container.instruction{
+    width: 1000px;
+    height: 500px;
+}
+
+.front-container p{
+    color: var(--front-font-color);
+    margin: 5px auto;
+    text-align: center;
+    font-size: 18px;
+}
+
+.front-container strong{
+    color: var(--front-font-color);
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 24px;
+}
+
+.front-container h3{
+    margin: 0;
+    color: var(--front-font-color);
+}
+
+p.cheat{
+    margin-top: 14px;
+    font-size: 14px;
+}
+
+.controls-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 15px 0;
+}
+
+.action-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+}
+
+.action-container span {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.key {
+    background-color: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 2px solid #555;
+    font-weight: bold;
+    min-width: 40px;
+    text-align: center;
+    box-shadow: 0 3px 0 #222;
+}
+
+.arrow-keys {
+    display: grid;
+    grid-template-areas: 
+        ". up ."
+        "left down right";
+    gap: 5px;
+    justify-content: center;
+}
+
+.arrow-keys .key:nth-child(1) {
+    grid-area: up;
+}
+.arrow-keys .key:nth-child(2) {
+    grid-area: left;
+}
+.arrow-keys .key:nth-child(3) {
+    grid-area: down;
+}
+.arrow-keys .key:nth-child(4) {
+    grid-area: right;
+}

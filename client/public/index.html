@@ -4,10 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="index.css"/>
     <title>Document</title>
 </head>
     <body>
-        <h1>Hello World!</h1>
+        <!-- Game Start Page -->
+        <div class="bg-container">
+            <img id="front-bg" class="front-bg-filter" src="img/background.jpg" alt="Game Front Page Background"/>
+        </div>
+        <!-- <button id="start-btn">Start</button> -->
+
+        <!-- Game Login Page -->
+        <!-- <section class="front">
+            <h1 class="front-header">Login</h1>
+            <div class="front-container login">
+                <form class="front-form" id="signin-form">
+                    <input id="signin-username" placeholder="Username" type="text">
+                    <input id="signin-password" placeholder="Password" type="password" style="margin-bottom: 24px;">
+                    <button class="submit-btn" type="submit">Confirm</button>
+                </form>
+                <span class="a"><u>Does not have an account?<br>Register here</u></span>
+            </div>
+        </section> -->
+
+        <!-- Game Register Page -->
+        <!-- <section class="front">
+            <h1 class="front-header">Registration</h1>
+            <div class="front-container register">
+                <form class="front-form" id="register-form">
+                    <input id="register-username" placeholder="Username" type="text">
+                    <input id="register-password" placeholder="Password" type="password">
+                    <input id="register-confirm-password" placeholder="Confirm Password" type="password" style="margin-bottom: 24px;">
+                    <button class="submit-btn" type="submit">Confirm</button>
+                </form>
+                <span class="a"><u>Back to login</u></span>
+            </div>
+        </section> -->
+        
+        <!-- Game Instruction Page -->
+        <section class="front">
+            <h1 class="front-header">Instruction</h1>
+            <div class="front-container instruction">
+                <p>You are a <strong>chef</strong> in the McDonald. </p>
+                <p>Customers will place orders, which will appear at the <strong>bottom</strong> of the. Each order shows the required food items (e.g., hamburger, fries, drink) and a time limit.</p>
+                <p>You need to <strong>collect and submit the correct ingredients</strong> for making the food items in the order.</p>
+                <p>If you fail to complete an order before its timer runs out, it will expire and be removed.</p>
+                <h3>Controls:</h3>
+                <div class="controls-container">
+                    <div class="action-container">
+                        <span>Move your character around the restaurant with: </span>
+                        <div class="arrow-keys">
+                            <div class="key">UP</div>
+                            <div class="key">LEFT</div>
+                            <div class="key">DOWN</div>
+                            <div class="key">RIGHT</div>
+                        </div>
+                    </div>
+                    <div class="action-container">
+                        <span>Collect ingredients with:</span>
+                        <div class="key">S</div>
+                    </div>
+                    <div class="action-container">
+                        <span>Drop ingredients with:</span>
+                        <div class="key">D</div>
+                    </div>
+                </div>
+                <p>When the game time ends, the player with the <strong>highest total income wins</strong>! If players have the same income, the game is declared a tie.</p>
+                <p class="cheat">Press Spacebar to activate Cheat Mode~ Your character will move faster to collect ingredients and complete orders much more quickly.</p>
+            </div>
+        </section>
+
         <script src="scripts/ui.js"></script>
         <script src="scripts/registration.js"></script>
         <script src="scripts/authentication.js"></script>
