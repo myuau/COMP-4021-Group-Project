@@ -11,12 +11,13 @@ const Authentication = (function() {
             password: password
         };
 
-        fetch("/signin", {
+        fetch(BASE_URL+"/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
+            credentials: 'include'
         }).then(res=>res.json())
         .then(json=>{
             if(json.status === "success"){
@@ -31,8 +32,9 @@ const Authentication = (function() {
     };
 
     const validate = function(onSuccess, onError) {
-        fetch("/validate", {
-            method: "GET"
+        fetch(BASE_URL+"/validate", {
+            method: "GET",
+            credentials: 'include'
         }).then(res=>res.json())
         .then(json=>{
             if(json.status === "success"){
@@ -48,8 +50,9 @@ const Authentication = (function() {
         })
     };
     const signout = function(onSuccess, onError) {
-        fetch("/signout", {
-            method: "GET"
+        fetch(BASE_URL+"/signout", {
+            method: "GET",
+            credentials: 'include'
         }).then(res=>res.json())
         .then(json=>{
             if(json.status === "success"){

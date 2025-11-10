@@ -30,6 +30,11 @@ const LoginForm = (function(){
             const username = $("#signin-username").val().trim();
             const password = $("#signin-password").val().trim();
 
+            if(!username || !password){
+                Toast.show("Please fill in the username and password.", "warning", 2000);
+                return;
+            }
+
             Authentication.signin(username, password,
                 () => {
                     Toast.show("Login Successfully!", "success", 2000);
@@ -67,12 +72,22 @@ const RegisterForm = (function(){
         $("#register-form").on("submit", (e)=>{
             e.preventDefault();
 
+            const username = $("#register-username").val().trim();
+            const password = $("#register-password").val().trim();
+            const confirmPassword = $("#register-confirm-password").val().trim();
+    
+            if(password !== confirmPassword){
+                Toast.show("The password and the confirmed password does not match. Please try again.", "warning", 2000);
+                return;
+            }    
+
             Registration.register(username, password,
                 () => {
                     $("#register-form").get(0).reset();
                     Toast.show("Register Successfully! You can return to the login page.", "success", 2000);
                 },
-                (error) => { Toast.show(error, "error", 2000); }
+                (error) => { 
+                    Toast.show(error, "error", 2000); }
             );
         })
 

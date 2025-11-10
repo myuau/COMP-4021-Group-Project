@@ -77,9 +77,10 @@
         <!-- Toast Message -->
         <div id="toast" class="toast"></div>
 
-        <script src="scripts/ui.js"></script>
-        <script src="scripts/registration.js"></script>
+        <script src="scripts/constant.js"></script>
+        <script src="scripts/registration.js" ></script>
         <script src="scripts/authentication.js"></script>
+        <script src="scripts/ui.js"></script>
         <script>
             $(function() {
                 UI.initialize();
@@ -87,6 +88,7 @@
                 Authentication.validate(
                     () => {
                         FrontPage.hide();
+                        InstructionPage.show();
                     },
                     () => { FrontPage.show(); }
                 );

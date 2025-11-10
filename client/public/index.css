@@ -153,6 +153,10 @@ span.a{
     color: #ffffff;
 }
 
+.front.instruction{
+    top: 50%;
+}
+
 .front-container.instruction{
     width: 1000px;
     height: 500px;

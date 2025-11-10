@@ -1,9 +1,18 @@
 const express = require("express");
 const path = require("path");
 const bcrypt = require("bcrypt");
+const session = require("express-session");
+const cors = require('cors');
+const fs = require("fs");
+
 const app = express();
 
 app.use(express.json());
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 
 const gameSession = session({
     secret: "game",
@@ -19,7 +28,7 @@ function containWordCharsOnly(text) {
 }
 
 app.post("/register", (req, res) => {
-    const {username, password} = res.body;
+    const {username, password} = req.body;
 
     let userData = fs.readFileSync("data/users.json", {encoding: "utf-8"});
     let users = JSON.parse(userData);
@@ -63,7 +72,7 @@ app.post("/register", (req, res) => {
 })
 
 app.post("/login", (req, res) => {
-    const {username, password} = res.body;
+    const {username, password} = req.body;
 
     let userData = fs.readFileSync("data/users.json", {encoding: "utf-8"});
     let users = JSON.parse(userData);
@@ -100,6 +109,12 @@ app.post("/login", (req, res) => {
                 error: "Password is incorrect!"
             })
         }
+    }
+    else{
+        return res.json({
+            status: "error",
+            error: "User does not exist. Please try again!"
+        })
     }
 })
 
