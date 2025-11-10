@@ -3,7 +3,9 @@ const FrontPage = (function(){
         $("#start-btn").show();
 
         $("#start-btn").click(()=>{
+            FrontPageAudio.playBtnAudio();
             $("#front-bg").addClass("front-bg-filter");
+            FrontPageAudio.playbg();
             hide();
             LoginForm.show();
         });
@@ -26,6 +28,7 @@ const LoginForm = (function(){
 
         $("#signin-form").on("submit", (e)=>{
             e.preventDefault();
+            FrontPageAudio.playBtnAudio();
 
             const username = $("#signin-username").val().trim();
             const password = $("#signin-password").val().trim();
@@ -47,6 +50,7 @@ const LoginForm = (function(){
 
         $("#to-register").click((e)=>{
             e.preventDefault();
+            FrontPageAudio.playBtnAudio();
 
             hide();
             RegisterForm.show();
@@ -71,6 +75,7 @@ const RegisterForm = (function(){
 
         $("#register-form").on("submit", (e)=>{
             e.preventDefault();
+            FrontPageAudio.playBtnAudio();
 
             const username = $("#register-username").val().trim();
             const password = $("#register-password").val().trim();
@@ -93,6 +98,7 @@ const RegisterForm = (function(){
 
         $("#to-login").click((e)=>{
             e.preventDefault();
+            FrontPageAudio.playBtnAudio();
 
             hide();
             LoginForm.show();
