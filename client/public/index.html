@@ -52,7 +52,7 @@
                 <h3>Controls:</h3>
                 <div class="controls-container">
                     <div class="action-container">
-                        <span>Move your character around the restaurant with: </span>
+                        <span><strong>Move</strong> your character around the restaurant with: </span>
                         <div class="arrow-keys">
                             <div class="key">UP</div>
                             <div class="key">LEFT</div>
@@ -61,12 +61,8 @@
                         </div>
                     </div>
                     <div class="action-container">
-                        <span>Collect ingredients with:</span>
+                        <span><strong>Collect</strong> or <strong>drop</strong> ingredients with:</span>
                         <div class="key">S</div>
-                    </div>
-                    <div class="action-container">
-                        <span>Drop ingredients with:</span>
-                        <div class="key">D</div>
                     </div>
                 </div>
                 <p>When the game time ends, the player with the <strong>highest total income wins</strong>! If players have the same income, the game is declared a tie.</p>
@@ -94,6 +90,7 @@
                     () => {
                         FrontPage.hide();
                         InstructionPage.show();
+                        FrontPageAudio.playbg();
                     },
                     () => { FrontPage.show(); }
                 );

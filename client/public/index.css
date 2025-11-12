@@ -207,6 +207,10 @@ p.cheat{
     font-size: 14px;
 }
 
+.action-container span strong{
+    font-size: 16px !important;
+}
+
 .key {
     background-color: #333;
     color: white;
