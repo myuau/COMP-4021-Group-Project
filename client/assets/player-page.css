@@ -1,0 +1,375 @@
+:root{
+    --front-caption-color: #be3418;
+    --front-hover-color: #ec411f;
+    --front-active-color: #862511;
+    --front-btn-bg-color: #ff7401;
+    --front-btn-border-color: #d00202;
+    --front-btn-hover-color: #ff9d00;
+    --front-btn-active-color: #ff4d01;
+    --front-font-color: #efefef;
+}
+
+/* --- Basic Setup --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+    /* Prevents scrolling of the whole page */
+    overflow: hidden; 
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    /* Stacks the kitchen on top of the order area */
+    flex-direction: column; 
+    position: relative;
+}
+
+/* --- Upper Part: Kitchen Area --- */
+#kitchen-area {
+    /* 1. Set the image source */
+    background-image: url('background.jpg');
+
+    /* 2. Set the dimensions of the div */
+    width: 100%;
+    height: 80%;
+
+    /* 3. Control how the image fits within the div (optional but recommended) */
+    background-size: cover; /* Stretches to cover the area without distorting aspect ratio */
+    background-repeat: no-repeat; /* Prevents the image from tiling */
+    background-position: center; /* Centers the image */
+
+    /* 4. Ensure no content is visible (since it's an empty div) */
+    text-indent: -9999px; /* Hides any possible text content off-screen */
+}
+
+
+
+#fried-chips-cabinet {
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 20px;
+    left: 240px;
+}
+
+.top{
+    position: absolute;
+    transform: skew(-20deg, 0deg);
+}
+.cab-body{
+    position: absolute;
+}
+.cab-side{
+    position: absolute;
+}
+#fried-chips{
+    transform: translate(23px,17px);
+}
+
+#coke-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 20px;
+    left: 620px;
+}
+
+#coke {
+    transform: translate(35px,17px);
+}
+
+#bread-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 20px;
+    left: 420px;
+}
+
+#bread {
+    transform: translate(28px,18px);
+}
+
+#fish-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 20px;
+    left: 850px;
+}
+
+#fish {
+    transform: translate(7px,10px);
+}
+
+#beef-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 300px;
+    left: 40px;
+}
+
+#beef {
+    transform: translate(17px,17px);
+}
+
+#chicken-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 300px;
+    left: 1200px;
+}
+
+#chicken {
+    transform: translate(10px,-5px);
+}
+
+#lettuce-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 300px;
+    left: 220px;
+}
+
+#lettuce {
+    transform: translate(10px,6px);
+}
+
+#cheese-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 120px; 
+    height: 130px;
+    /* Move cabinet here */
+    top: 300px;
+    left: 1000px;
+}
+
+#cheese {
+    transform: translate(30px,15px);
+}
+
+
+#trash-bin {
+    position: absolute;
+    width: 90px; 
+    height: 130px;
+    /* Move bin here */
+    top: 30px;
+    left: 1100px;
+}
+
+
+#counter {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+#counter text {
+    font-size: 350%;
+    fill: white;
+    stroke: black;
+    stroke-width: 1px;
+}
+
+#balance-container {
+    position: absolute;
+    top: -10px;
+    left: 0px;
+}
+
+#balance-container text {
+    font-size: 200%;
+    fill: green;
+    stroke: black;
+    stroke-width: 0.5px;
+}
+
+#player-holding {
+    position: absolute;
+    
+    /* Move it here */
+    top: 510px;
+    left: 0px;
+}
+.bag-ingredient-icon {
+    /* Set a small, fixed size for the icons in the bag */
+    width: 35px; 
+    height: 35px; 
+    /* Ensures the image scales down correctly without cropping */
+    object-fit: contain; 
+}
+
+#table{
+    position: absolute;
+    /* Move it here */
+    top: 510px;
+    left: 320px;
+}
+
+#cashier{
+    position: absolute;
+    /* Move it here */
+    top: 440px;
+    left: 680px;
+}
+/* --- Lower Part: Order Area --- */
+#order-area {
+    /* Set a fixed height for the order section */
+    height: 20%; 
+    /* This splits it 50/50 for Player 1 and Player 2 */
+    display: flex; 
+    justify-content: space-between;
+    width: 100%;
+    background-color: #d2b48c; /* Tan 'counter' color */
+}
+
+.player-orders {
+    /* Each side takes up 50% of the width */
+    flex-basis: 49.99%; 
+    padding: 10px;
+    overflow-y: auto; /* Adds a scrollbar if orders overflow */
+    background-color: #ec411f;
+    border:#862511, solid 6px;
+    border-radius: 10px;
+}
+
+.player-orders h2 {
+    text-align: center;
+    color: #fff; /* Dark brown text */
+    margin-bottom: 10px;
+}
+
+.order-list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.order-item {
+    background-color: #fffefa; /* Creamy paper color */
+    border: 2px solid #a0a0a0;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    /* Aligns item name left and price right */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+
+    width: 33%;
+    height: 90px;
+    display: flex;
+    align-items: center;
+}
+
+.order-header-bar {
+    display: flex;
+    /* Pushes the order-type to the left and order-price to the right */
+    justify-content: space-between; 
+    align-items: center;
+    margin-bottom: 8px; /* Adds space above the ingredient bar */
+    font-weight: bold;
+    border-bottom: 1px solid #eee; /* Visual separation line */
+    padding-bottom: 5px;
+}
+
+.order-type {
+    /* 4. Allow the order type span to take up most of the available space */
+    /* This pushes the price and time to the right */
+    flex-grow: 1; 
+    font-weight: bold;
+    color: #333;
+}
+
+.order-price {
+    /* 5. Ensure the price has a fixed width and spacing */
+    width: 50px; 
+    text-align: right;
+    margin-right: 5px;
+    color: green; /* Visual cue for money */
+}
+
+.ingredient-icon {
+    /* Set a fixed size */
+    width: 50px; 
+    height: 60px; 
+    
+    /* Ensure the image scales down correctly within the bounding box */
+    object-fit: contain; 
+}
+
+.ingredient-icons {
+    /* Use Flexbox to align them horizontally and manage overflow */
+    display: flex; 
+    align-items: center; /* Vertically centers the icons */
+    gap: 5px;
+    /* Ensure the container doesn't exceed the width of the order item */
+    max-width: 100%;
+}
+
+/* --- Placeholder Game Elements --- */
+/* You can delete these; they are just for visualization */
+.player {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-weight: bold;
+    border: 3px solid white;
+}
+
+#player1 {
+    background-color: #007bff; /* Blue */
+    top: 40%;
+    left: 30%;
+}
+
+#player2 {
+    background-color: #dc3545; /* Red */
+    top: 40%;
+    left: 40%;
+}
+
+.station {
+    position: absolute;
+    background-color: #8b5a40; /* Brown counter */
+    border: 4px solid #6b4a3a;
+    border-radius: 5px;
+    top: 55%;
+    left: 30%;
+    width: 200px;
+    height: 60px;
+}
