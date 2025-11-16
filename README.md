@@ -1,5 +1,5 @@
 # COMP-4021-Group-Project
-COMP 4021 Group Project -- Crazy McDonald
+COMP 4021 Group Project -- Busy McDonald
 
 # Installation
 <br>
