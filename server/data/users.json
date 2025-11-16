@@ -1,23 +1,10 @@
 {
   "cherry": {
+    "userId": "1",
     "password": "$2b$10$R0789srAh5pWx.VSRPmlVusFNRtelsAdtka9vPM/KifhulgQU/kOa"
   },
-  "cherry1": {
-    "password": "$2b$10$gGnsLGULijbVWCzORmW3Fe5YEaWziM5kwGMWvYPYu524FyU51Wl4q"
-  },
-  "cherry2": {
-    "password": "$2b$10$we1A1fojp1Povez48v5HKeyB2bMEq.zjwr1BzWLq/kW09weoff2IG"
-  },
-  "cherry4": {
-    "password": "$2b$10$ds8gy6a3vUvn.Em6k6lYyO8I0u0AZJkK1lmSkDzsms3WHZotaEPEO"
-  },
-  "cherry5": {
-    "password": "$2b$10$OK.1lgJNTryupX3iPnqcJO77rLVb44ij/vmugYKd7uDkcMQnK9JH."
-  },
-  "cherry6": {
-    "password": "$2b$10$/npZfaxNvMcOU.VUV2BVzOLmoUQFsb.mU2HKZXsICrKBpja.FutOy"
-  },
-  "cherry10": {
-    "password": "$2b$10$J0gsZiY5BxJwlVuhVE1ec.L6e9xMFCLA6Uzg/a3tntRjZoTFhNeIS"
+  "May": {
+    "password": "$2b$10$5b348QmqXkez4z0LuCg4leT3UGzqTh14f7n3deNDGQ6bHPRydJpgy",
+    "userId": "1"
   }
 }

@@ -1,11 +1,22 @@
 const express = require("express");
 const path = require("path");
-const bcrypt = require("bcrypt");
+const {createServer} = require("http");
+const {Server} = require("socket.io");
 const session = require("express-session");
+const bcrypt = require("bcrypt");
 const cors = require('cors');
 const fs = require("fs");
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"]
+    }
+});
+
+const matchPool = require('./utils/matchPool.js')(io); 
 
 app.use(express.json());
 
@@ -63,7 +74,8 @@ app.post("/register", (req, res) => {
     const hash = bcrypt.hashSync(password, 10);
 
     users[username] = {
-        password: hash
+        password: hash,
+        userId: "" + Object.keys(users).length
     }
 
     fs.writeFileSync("data/users.json", JSON.stringify(users, null, 2));
@@ -93,7 +105,8 @@ app.post("/login", (req, res) => {
     if(username in users){
         if(bcrypt.compareSync(password, users[username].password)){
             const account = {
-                username: username
+                username: username,
+                userId: users[username].userId
             };
 
             req.session.user = account;
@@ -135,6 +148,20 @@ app.get("/signout", (req, res) => {
     return res.json({ status: "success" });
 });
 
-app.listen(8000, ()=>{
+io.use((socket, next) => {
+    gameSession(socket.request, {}, next);
+});
+
+io.on("connection", (socket) => {
+    socket.on("request match", () => {
+        matchPool.handleMatchRequest(socket);
+    });
+
+    socket.on("disconnect", () => {
+        matchPool.handleDisconnect(socket);
+    });
+})
+
+httpServer.listen(8000, ()=>{
     console.log("The server side is running at port 8000...");
 });

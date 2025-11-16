@@ -125,6 +125,7 @@ const InstructionPage = (function(){
         $(".submit-btn.next").click((e) => {
             e.preventDefault();
             FrontPageAudio.playBtnAudio();
+            FrontPageAudio.stopbg();
 
             hide();
             PairupPage.show();
@@ -193,6 +194,8 @@ const PairupPage = (function(){
         $("#pairup-header.finding").fadeIn(500);
         $("#waiting-container").fadeIn(500);
 
+        Socket.connect();
+
         if(findingTimer){
             clearTimeout(findingTimer);
             findingTimer = null;
@@ -226,18 +229,22 @@ const PairupPage = (function(){
             header.removeClass("finding");
         }
         header.addClass("match");
-        header.text("Match found!<br>Get ready to cook!");
+        header.html("Match found!<br>Get ready to cook!");
         $("#pairup-header").show();
 
-        setTimeout(hideMatched, 1500)
+        setTimeout(hideMatched, 1500);
     }
 
     const hideMatched = function(){
-        $("#front-header.match").fadeOut(500);
+        $("#pairup-header.match").fadeOut(500, () => {
+            showCountdown();
+        });
     }
 
     const showCountdown = function(){
         $("#countdown").fadeIn(500);
+        timeCount = 4;
+
         function countdown(){
             timeCount--;
             if(timeCount > 0){
@@ -249,7 +256,7 @@ const PairupPage = (function(){
                 setTimeout(UI.hideFront, 1000);
             }
         }
-        countdown();
+        setTimeout(countdown, 500);
     }
 
     return { initialize, show, hide, showFinding, hideFinding, showMatched, showCountdown };

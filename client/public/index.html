@@ -76,7 +76,7 @@
         <div id="pairup-bg-filter"></div>
         <section class="front pairup">
             <h3 id="pairup-header" class="finding">Finding the perfect opponent for you<span>.</span></h3>
-            <h3 id="count-down"></h3>
+            <h3 id="countdown"></h3>
         </section>
         <div id="waiting-container">
             <img src="img/mcdonald-character.png" alt="Ronald McDonald"/>
@@ -89,12 +89,14 @@
         <!-- Front Page Audio -->
         <audio id="front-bg-music" src="audio/front-bg-music.mp3"></audio>
         <audio id="front-btn-press" src="audio/button-press.wav"></audio>
-
+        
+        <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script src="scripts/constant.js"></script>
         <script src="scripts/registration.js" ></script>
         <script src="scripts/authentication.js"></script>
         <script src="scripts/audio.js"></script>
         <script src="scripts/ui.js"></script>
+        <script src="scripts/socket.js"></script>
         <script>
             $(function() {
                 UI.initialize();
@@ -103,7 +105,7 @@
                     () => {
                         FrontPage.hide();
                         InstructionPage.show();
-                        FrontPageAudio.playbg();
+                        setTimeout(FrontPageAudio.playbg, 2000);
                     },
                     () => { FrontPage.show(); }
                 );
