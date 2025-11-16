@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" href="index.css"/>
+    <link rel="stylesheet" href="assets/index.css"/>
     <title>Document</title>
 </head>
     <body>
         <!-- Game Start Page -->
         <div class="bg-container">
             <img id="front-bg" class="" src="img/background.jpg" alt="Game Front Page Background"/>
+            <img id="front-bg" class="title" src="img/title.png" alt="Busy McDonald"/>
         </div>
         <button id="start-btn">Start</button>
 
@@ -46,9 +47,9 @@
             <h1 class="front-header">Instruction</h1>
             <div class="front-container instruction">
                 <p>You are a <strong>chef</strong> in the McDonald. </p>
-                <p>Customers will place orders, which will appear at the <strong>bottom</strong> of the. Each order shows the required food items (e.g., hamburger, fries, drink) and a time limit.</p>
+                <p>Customers will place orders, which will appear at the <strong>bottom</strong> of the. Each order shows the required food items (e.g., hamburger, fries, drink).</p>
                 <p>You need to <strong>collect and submit the correct ingredients</strong> for making the food items in the order.</p>
-                <p>If you fail to complete an order before its timer runs out, it will expire and be removed.</p>
+                <p>If you fail to complete an order within 20 seconds, it will expire and be removed.</p>
                 <h3>Controls:</h3>
                 <div class="controls-container">
                     <div class="action-container">
@@ -68,7 +69,19 @@
                 <p>When the game time ends, the player with the <strong>highest total income wins</strong>! If players have the same income, the game is declared a tie.</p>
                 <p class="cheat">Press Spacebar to activate Cheat Mode~ Your character will move faster to collect ingredients and complete orders much more quickly.</p>
             </div>
+            <button class="submit-btn next">Next</button>
         </section>
+
+        <!-- Game Pair Up Page -->
+        <div id="pairup-bg-filter"></div>
+        <section class="front pairup">
+            <h3 id="pairup-header" class="finding">Finding the perfect opponent for you<span>.</span></h3>
+            <h3 id="count-down"></h3>
+        </section>
+        <div id="waiting-container">
+            <img src="img/mcdonald-character.png" alt="Ronald McDonald"/>
+            <div class="chat-bubble">Picking up the right ingredients will truly save you precious time in completing each order! But keep in mind, you can only select up to 4 items—so choose wisely and give it your best shot!</div>
+        </div>
 
         <!-- Toast Message -->
         <div id="toast" class="toast"></div>
