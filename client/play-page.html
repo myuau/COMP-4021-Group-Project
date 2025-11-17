@@ -35,27 +35,35 @@
       <div class="player-orders" id="player-2-orders">
         <h2>Player 2's Orders</h2>
         <ul class="order-list">
-          <li class="order-item" id="p2-i1"><span>Soup</span><span>$40</span></li>
-          <li class="order-item" id="p2-i2"><span>Soup</span><span>$40</span></li>
-          <li class="order-item" id="p2-i3"><span>Soup</span><span>$40</span></li>
         </ul>
       </div>
 
     </div>
 
-    <svg id="player-holding" viewBox="0 0 400 150" width="400" height="150">
+    <svg id="player1-holding" viewBox="0 0 400 150" width="400" height="150">
 
-      <rect id="slot-container-rect" x="10" y="10" width="300" height="110" fill="#ff9d00" stroke="#ff7401"
+      <rect id="slot-container-rect1" x="10" y="10" width="300" height="110" fill="#ff9d00" stroke="#ff7401"
         stroke-width="3" stroke="5" rx="5" />
 
       <text x="160" y="30" font-size="16" font-weight="bold" text-anchor="middle" fill="#fff">Player1's Bag</text>
 
-      <svg id="player-bag-svg" width="300" height="150" viewBox="0 0 300 150">
-        <g id="held-food-group" transform="translate(10, 5)">
+      <svg id="player-1bag-svg" width="300" height="150" viewBox="0 0 300 150">
+        <g id="held-food-group1" transform="translate(10, 5)">
             </g>
       </svg>
-
     </svg>
+	<svg id="player2-holding" viewBox="0 0 400 150" width="400" height="150">
+
+		<rect id="slot-container-rect2" x="10" y="10" width="300" height="110" fill="#ff9d00" stroke="#ff7401"
+		  stroke-width="3" stroke="5" rx="5" />
+  
+		<text x="160" y="30" font-size="16" font-weight="bold" text-anchor="middle" fill="#fff">Player2's Bag</text>
+  
+		<svg id="player2-bag-svg" width="300" height="150" viewBox="0 0 300 150">
+		  <g class="held-food-group2" transform="translate(10, 5)">
+			  </g>
+		</svg>
+	</svg>
 
     <g id="check-out-area">
       <img src="assets/svgs/table.svg" id="table">
@@ -2636,6 +2644,7 @@
   <script src="scripts/order.js"></script>
   <script src="scripts/collect.js"></script>
   <script src="scripts/complete.js"></script>
+  <script src="scripts/obstacle.js"></script>
   <script>
     const totalGameTime = 150;
     let gameStartTime = 0;
@@ -2658,6 +2667,8 @@
 
     const player = Player(context, 427, 240, gameArea);
     // const player2 = Player(context, 500, 240, gameArea);
+    const banana = obstacle(context, 427, 350);
+    const bananaMaxAge = 5000;       // The maximum age of the banana in milliseconds
 
     // Order management
     const MAX_ORDERS = 3;
@@ -2687,9 +2698,33 @@
         return;
       }
 
+      // Banana peel part
+      if (banana.getAge(now) > bananaMaxAge) {
+		banana.randomize(gameArea);
+		banana.show();
+      }
+
+      let playerBbox = {
+		top: player.getBoundingBox().getTop(),
+		left: player.getBoundingBox().getLeft(),
+		bottom: player.getBoundingBox().getBottom(),
+		right: player.getBoundingBox().getRight()
+	  }
+	  let bananaBbox = banana.getBoundingBox();
+      if (overlap(playerBbox, bananaBbox) && banana.Visible()) {
+		if (playerBag.length > 0) {
+			playerBag.shift();	// remove one item
+		} else {
+			balance -= 5; // Penalty of $5
+			$("#balance").text(balance);
+		}
+        banana.hide();
+      }
+
 
       player.update(now);
       context.clearRect(0, 0, cv.width, cv.height);
+	  banana.draw();
       player.draw();
 
       requestAnimationFrame(doFrame);
@@ -2703,6 +2738,8 @@
     };
 
     $(document).ready(function () {
+    	banana.randomize(gameArea);
+
       $(document).on("keydown", function (event) { 
         dir =  dir_map[event.keyCode];
           let eventKeyCode = event.keyCode;
@@ -2773,12 +2810,12 @@
         }
       });
 
+	  console.log(banana.getXY());
       requestAnimationFrame(doFrame);
 
       // Order generation and checking loop
       checkEmptyList();
       gameIntervalId = requestAnimationFrame(gameTick);
-      console.log(document.getElementById('fried-chips-cabinet').getBBox());
     });
   </script>
 

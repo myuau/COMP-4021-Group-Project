@@ -155,7 +155,7 @@ function discardIngredient() {
 // NOTE: Assuming INGREDIENT_SVG_PATHS and playerBag are defined globally.
 
 function renderPlayerBag() {
-    const gContainer = document.getElementById("held-food-group");
+    const gContainer = document.getElementById("held-food-group1");
 
     gContainer.innerHTML = '';
 

@@ -1,66 +1,127 @@
-// This function defines the Gem module.
-// - `ctx` - A canvas context for drawing
-// - `x` - The initial x position of the gem
-// - `y` - The initial y position of the gem
-// - `color` - The colour of the gem
-const Gem = function(ctx, x, y, color) {
+// This file defines the obstacle module. It is a self-contained component
+// responsible for drawing a static image (banana.svg), managing its position,
+// tracking its age, and determining its bounding box for collision detection.
 
-    // This is the sprite sequences of the gem of four colours
-    // `green`, `red`, `yellow` and `purple`.
-    const sequences = {
-        green:  { x: 192, y:  0, width: 16, height: 16, count: 4, timing: 200, loop: true },
-        red:    { x: 192, y: 16, width: 16, height: 16, count: 4, timing: 200, loop: true },
-        yellow: { x: 192, y: 32, width: 16, height: 16, count: 4, timing: 200, loop: true },
-        purple: { x: 192, y: 48, width: 16, height: 16, count: 4, timing: 200, loop: true }
-    };
+const obstacle = function(ctx, x, y) {
 
-    // This is the sprite object of the gem created from the Sprite module.
-    const sprite = Sprite(ctx, x, y);
+    // --- Internal State and Configuration ---
+    let isVisible = true;
+    // Position state
+    let position = { x: x, y: y };
 
-    // The sprite object is configured for the gem sprite here.
-    sprite.setSequence(sequences[color])
-          .setScale(2)
-          .setShadowScale({ x: 0.75, y: 0.2 })
-          .useSheet("object_sprites.png");
-
-    // This is the birth time of the gem for finding its age.
+    // This is the creation time of the obstacle for finding its age.
     let birthTime = performance.now();
 
-    // This function sets the color of the gem.
-    // - `color` - The colour of the gem which can be
-    // `"green"`, `"red"`, `"yellow"` or `"purple"`
-    const setColor = function(color) {
-        sprite.setSequence(sequences[color]);
-        birthTime = performance.now();
+    // Configuration derived from the original setup:
+    // const SCALE = 2; // Scaling factor for rendering
+    const FRAME_WIDTH = 50;
+    const FRAME_HEIGHT = 50;
+    // const RENDER_WIDTH = FRAME_WIDTH * SCALE;
+    // const RENDER_HEIGHT = FRAME_HEIGHT * SCALE;
+
+    // Load the SVG image sheet internally
+    const sheet = new Image();
+    sheet.src = "assets/svgs/banana.png";
+
+    // --- Private Methods ---
+
+    /**
+     * Sets the position of the obstacle.
+     * @param {number} newX - The new x coordinate.
+     * @param {number} newY - The new y coordinate.
+     */
+    const setXY = function(newX, newY) {
+        position.x = newX;
+        position.y = newY;
     };
 
-    // This function gets the age (in millisecond) of the gem.
-    // - `now` - The current timestamp
+    /**
+     * Gets the age (in milliseconds) of the obstacle.
+     * @param {number} now - The current timestamp.
+     * @returns {number} The age of the obstacle.
+     */
     const getAge = function(now) {
         return now - birthTime;
     };
 
-    // This function randomizes the gem colour and position.
-    // - `area` - The area that the gem should be located in.
+    /**
+     * Randomizes the obstacle position and resets its age.
+     * @param {object} area - An object with a randomPoint() method (e.g., gameArea).
+     */
     const randomize = function(area) {
-        /* Randomize the color */
-        const colors = ["green", "red", "yellow", "purple"];
-        setColor(colors[Math.floor(Math.random() * 4)]);
-
         /* Randomize the position */
-        const {x, y} = area.randomPoint();
-        sprite.setXY(x, y);
+        const {x: newX, y: newY} = area.randomPoint();
+        setXY(newX, newY);
+
+        /* Reset birth time when randomized */
+        birthTime = performance.now();
     };
 
+    /**
+     * Draws the obstacle on the canvas.
+     */
+    const draw = function() {
+        ctx.save();
+        // Only draw if the image has successfully loaded
+        if (!sheet.complete || sheet.naturalWidth === 0) {
+            return; 
+        }
+        if (!isVisible) {
+            ctx.restore();
+            return;
+        }
+
+        // Draw the image directly using the canvas context
+        // ctx.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
+        ctx.drawImage(
+            sheet,              // The image object (banana.svg)
+            0,                  // sx (Source X - top-left of source image)
+            0,                  // sy (Source Y - top-left of source image)
+            FRAME_HEIGHT,      // sh (Source Height)
+            FRAME_WIDTH,       // sw (Source Width)
+            position.x,
+            position.y,
+            50,
+            50
+        );
+        ctx.restore();
+    };
+
+    /**
+     * Update is a placeholder for game loop integration.
+     */
+    const hide = function() {
+        // Since the obstacle is static and not animated, this function is empty.
+        isVisible = false;
+    };
+    const show = function() {
+        isVisible = true;
+    };
+    const Visible = function() {
+        return isVisible;
+    };
+
+    const getBoundingBox = function() {
+        return {
+            top: position.y,
+            left: position.x,
+            bottom: position.y + FRAME_HEIGHT,
+            right: position.x + FRAME_WIDTH
+        };
+    };
+
+    // --- Public Interface ---
+    
     // The methods are returned as an object here.
     return {
-        getXY: sprite.getXY,
-        setXY: sprite.setXY,
-        setColor: setColor,
+        getXY: () => position,
+        setXY: setXY,
         getAge: getAge,
-        getBoundingBox: sprite.getBoundingBox,
         randomize: randomize,
-        draw: sprite.draw,
-        update: sprite.update
+        draw: draw,
+        show: show,
+        hide: hide,
+        Visible: Visible,
+        getBoundingBox: getBoundingBox
     };
 };

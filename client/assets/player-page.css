@@ -212,12 +212,15 @@ body, html {
     stroke-width: 0.5px;
 }
 
-#player-holding {
+#player1-holding, #player2-holding{
     position: absolute;
     
     /* Move it here */
     top: 510px;
     left: 0px;
+}
+#player2-holding {
+    left: 1150px;
 }
 .bag-ingredient-icon {
     /* Set a small, fixed size for the icons in the bag */
@@ -286,7 +289,9 @@ body, html {
     flex-direction: column;
     justify-content: space-between; 
 
-    width: 33%;
+    width: calc((100% - 20px) / 3);
+    flex-shrink: 0;
+    
     height: 90px;
     display: flex;
     align-items: center;
