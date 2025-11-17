@@ -8,77 +8,79 @@ const STATIC_CABINET_BOUNDARIES = [
         // and the layout is stable (e.g., from a final getBoundingClientRect() call).
         top: 20,    // Top screen pixel coordinate
         left: 150,    // Left screen pixel coordinate
-        bottom: 140, // Bottom screen pixel coordinate (top + height)
-        right: 200,   // Right screen pixel coordinate (left + width)
+        bottom: 180, // Bottom screen pixel coordinate (top + height)
+        right: 230,   // Right screen pixel coordinate (left + width)
+    },
+    {
+        id: 'bread-cabinet',
+        top: 20,
+        left: 250,
+        bottom: 180,
+        right: 330,
+
     },
     {
         id: 'coke-cabinet',
         top: 20,
         left: 355,
-        bottom: 140,
-        right: 420,
-    },
-    {
-        id: 'bread-cabinet',
-        top: 20,
-        left: 255,
-        bottom: 140,
-        right: 300,
-
+        bottom: 180,
+        right: 440,
     },
     {
         id: 'fish-cabinet',
         top: 20,
-        left: 500,
-        bottom: 140,
-        right: 550,
+        left: 480,
+        bottom: 180,
+        right: 560,
 
-
-    },
-    {
-        id: 'beef-cabinet',
-        top: 290,
-        left: 65,
-        bottom: 410,
-        right: 105,
-
-    },
-    {
-        id: 'chicken-cabinet',
-        top: 290,
-        left: 700,
-        bottom: 410,
-        right: 750,
-
-    },
-    {
-        id: 'lettuce-cabinet',
-        top: 290,
-        left: 160,
-        bottom: 410,
-        right: 213,
-
-
-    },
-    {
-        id: 'cheese-cabinet',
-        top: 290,
-        left: 580,
-        bottom: 410,
-        right: 635,
 
     },
     {
         id: 'trash-bin',
         top: 20,
-        left: 610,
-        bottom: 140,
+        left: 595,
+        bottom: 180,
         right: 660,
 
     },
+
     {
-        id: "cashier-counter",
-        top: 420,
+        id: 'beef-cabinet',
+        top: 280,
+        left: 45,
+        bottom: 410,
+        right: 125,
+
+    },
+    {
+        id: 'lettuce-cabinet',
+        top: 280,
+        left: 145,
+        bottom: 410,
+        right: 215,
+
+
+    },
+    {
+        id: 'cheese-cabinet',
+        top: 280,
+        left: 560,
+        bottom: 410,
+        right: 645,
+
+    },
+    {
+        id: 'chicken-cabinet',
+        top: 280,
+        left: 675,
+        bottom: 410,
+        right: 755,
+
+    },
+
+    {
+        id: 'cashier-counter',
+        top: 410,
         left: 200,
         bottom: 580,
         right: 600,
@@ -195,6 +197,22 @@ function BoundingBoxOverlap(playerBox, cabinetId) {
 function CollisionWithAnyItem(playerBox) {
     for (const itemBox of STATIC_CABINET_BOUNDARIES) {
         if (BoundingBoxOverlap(playerBox, itemBox.id)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function overlap(boxA, boxB) {
+    return !(boxA.right < boxB.left ||
+             boxA.left > boxB.right ||
+             boxA.bottom < boxB.top ||
+             boxA.top > boxB.bottom);
+}
+
+function isCollision(box) {
+    for (const itemBox of STATIC_CABINET_BOUNDARIES) {
+        if (overlap(box, itemBox)) {
             return true;
         }
     }

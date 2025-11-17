@@ -15,7 +15,7 @@
 
     <svg xmlns="http://www.w3.org/2000/svg" id="counter">
       <text x="10" y="55">
-        TIME:<tspan id="time-remaining">180</tspan>
+        TIME:<tspan id="time-remaining">150</tspan>
       </text>
     </svg>
     <svg id="balance-container">
@@ -2637,12 +2637,24 @@
   <script src="scripts/collect.js"></script>
   <script src="scripts/complete.js"></script>
   <script>
-    const totalGameTime = 180;
+    const totalGameTime = 150;
     let gameStartTime = 0;
 
     const cv = $('canvas').get(0);
     const context = cv.getContext('2d');
     const gameArea = BoundingBox(context, 60, 40, 400, 760);
+    const STATIC_BOUNDARIES_AS_BOXES = STATIC_CABINET_BOUNDARIES.map(boundary => {
+      return {
+        id: boundary.id,
+        box: BoundingBox(
+          context,
+          boundary.top,
+          boundary.left,
+          boundary.bottom,
+          boundary.right
+        )
+      }
+    });
 
     const player = Player(context, 427, 240, gameArea);
     // const player2 = Player(context, 500, 240, gameArea);
@@ -2683,21 +2695,28 @@
       requestAnimationFrame(doFrame);
     }
 
+    const dir_map = {
+      37: 'left',
+      38: 'up',
+      39: 'right',
+      40: 'down'
+    };
 
     $(document).ready(function () {
-      $(document).on("keydown", function (event) {
-        let eventKeyCode = event.keyCode;
-        if (eventKeyCode === 37) {
-          player.move(1);
-        } else if (eventKeyCode === 38) {
-          player.move(2);
-        } else if (eventKeyCode === 39) {
-          player.move(3);
-        } else if (eventKeyCode === 40) {
-          player.move(4);
-        } else if (eventKeyCode === 32) {
-          player.speedUp();
-        }
+      $(document).on("keydown", function (event) { 
+        dir =  dir_map[event.keyCode];
+          let eventKeyCode = event.keyCode;
+          if (eventKeyCode === 37) {
+            player.move(1);
+          } else if (eventKeyCode === 38) {
+            player.move(2);
+          } else if (eventKeyCode === 39) {
+            player.move(3);
+          } else if (eventKeyCode === 40) {
+            player.move(4);
+          } else if (eventKeyCode === 32) {
+            player.speedUp();
+          }
       });
 
       $(document).on("keyup", function (event) {
@@ -2722,29 +2741,35 @@
         if (eventKeyCode === 69) {  // 'E' key
 
           let playerBoudingBox = player.getBoundingBox();
-          if (BoundingBoxOverlap(playerBoudingBox, "trash-bin")) {
+          const left = playerBoudingBox.getLeft() + 12;
+          const top = playerBoudingBox.getTop();
+          if (STATIC_BOUNDARIES_AS_BOXES[4].box.isPointInBox(left,top)) {
             discardIngredient();
           }
 
-          cabinetBoundingBoxes.forEach((cabinetBox) => {
-            if (BoundingBoxOverlap(playerBoudingBox, cabinetBox.id)) {
-              collectIngredient(CABINET_INGREDIENT_MAP[cabinetBox.id]);
+          const right = playerBoudingBox.getRight() - 12;
+          const bottom = playerBoudingBox.getBottom();
+
+          STATIC_BOUNDARIES_AS_BOXES.forEach((cabinetBox) => {
+            if (cabinetBox.id != 'trash-bin' && cabinetBox.id != 'cashier-counter') {
+              if (cabinetBox.box.isPointInBox(left,top) || cabinetBox.box.isPointInBox(right,bottom))
+                collectIngredient(CABINET_INGREDIENT_MAP[cabinetBox.id]);
+            } else if (cabinetBox.id == 'cashier-counter') {
+              if (cabinetBox.box.isPointInBox(right,bottom)) {
+                // Check complete
+                const completeOrder = checkComplete(playerBag, ordersList);
+                if (completeOrder) {
+                  console.log("Order completed:", completeOrder);
+                  removeOrderFromList(completeOrder, ordersList, playerOrderElement);
+                  while(playerBag.length > 0) {
+                    playerBag.shift();
+                  }
+                  balance += completeOrder.price;
+                  $("#balance").text(balance);
+                }
+              }
             }
           });
-
-          if (BoundingBoxOverlap(playerBoudingBox, "cashier-counter")) {
-            // Check complete
-            const completeOrder = checkComplete(playerBag, ordersList);
-            if (completeOrder) {
-              console.log("Order completed:", completeOrder);
-              removeOrderFromList(completeOrder, ordersList, playerOrderElement);
-              while(playerBag.length > 0) {
-                playerBag.shift();
-              }
-              balance += completeOrder.price;
-              $("#balance").text(balance);
-            }
-          }
         }
       });
 

@@ -29,7 +29,7 @@ const Player = function(ctx, x, y, gameArea) {
     sprite.setSequence(sequences.idleDown)
           .setScale(2)
           .setShadowScale({ x: 0.75, y: 0.20 })
-          .useSheet("assets/sprite-sheet.png");
+          .useSheet("assets/sprite-sheet-blue.png");
 
     // This is the moving direction, which can be a number from 0 to 4:
     // - `0` - not moving
@@ -96,8 +96,18 @@ const Player = function(ctx, x, y, gameArea) {
             }
 
             /* Set the new position if it is within the game area */
-            if (gameArea.isPointInBox(x, y))
+            let set = true;
+            if (!gameArea.isPointInBox(x, y)) {
+                set = false;
+            }
+            for (const cabinetBox of STATIC_BOUNDARIES_AS_BOXES) {
+                if (cabinetBox.box.isPointInBox(x, y)) {
+                    set = false;
+                }
+            }
+            if (set) {
                 sprite.setXY(x, y);
+            }
         }
 
         /* Update the sprite object */
