@@ -1,6 +1,7 @@
 const FrontPageAudio = (function(){
     const playbg = function(){
         const audio = $("#front-bg-music")[0];
+        audio.currentTime = 0;
         audio.muted = false;
         audio.loop = true;
         audio.play();
@@ -8,16 +9,49 @@ const FrontPageAudio = (function(){
 
     const stopbg = function(){
         const audio = $("#front-bg-music")[0];
-        audio.muted = true;
-        audio.loop = false;
         audio.pause();
+        audio.currentTime = 0;
     }
 
     const playBtnAudio = function(){
         const audio = $("#front-btn-press")[0];
-        audio.loop = false;
+        audio.currentTime = 0;
         audio.play();
     }
 
-    return { playbg, stopbg, playBtnAudio };
+    const playCountdownAudio = function(){
+        const audio = $("#front-countdown")[0];
+        audio.currentTime = 0;
+        audio.play();
+    } 
+
+    const playCountdownNoticeAudio = function(){
+        const audio = $("#front-countdown-timeup")[0];
+        audio.currentTime = 0;
+        audio.play();
+    }
+
+    const playPairupWaitAudio = function(){
+        const audio = $("#front-pairup-waiting")[0];
+        audio.currentTime = 0;
+        audio.muted = false;
+        audio.loop = true;
+        audio.play();
+    }
+
+    const stopPairupWaitAudio = function(){
+        const audio = $("#front-pairup-waiting")[0];
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    return { 
+        playbg, 
+        stopbg, 
+        playBtnAudio, 
+        playCountdownAudio, 
+        playCountdownNoticeAudio, 
+        playPairupWaitAudio, 
+        stopPairupWaitAudio 
+    };
 })();

@@ -19,10 +19,18 @@ const Socket = (function() {
         });
     };
 
+    const cancelMatch = function() {
+        socket.emit("cancel match");
+    }
+
+    const endGame = function() {
+        socket.emit("end game", {groupId: groupId});
+    }
+
     const disconnect = function() {
         socket.disconnect();
         socket = null;
     };
 
-    return { getSocket, connect, disconnect };
+    return { getSocket, connect, disconnect, cancelMatch, endGame };
 })();

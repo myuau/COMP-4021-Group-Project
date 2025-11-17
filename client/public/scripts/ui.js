@@ -6,7 +6,7 @@ const FrontPage = (function(){
             FrontPageAudio.playBtnAudio();
             $("#front-bg").addClass("front-bg-filter");
             FrontPageAudio.playbg();
-            hide();
+            hideTitle();
             LoginForm.show();
         });
     }
@@ -15,12 +15,17 @@ const FrontPage = (function(){
         $("#start-btn").show();
     }
     
-    const hide = function(){
+    const hideTitle = function(){
         $("#start-btn").fadeOut(500);
         $("#front-bg.title").fadeOut(500);
     }
 
-    return {initialize, show, hide};
+    const hide = function(){
+        $("#start-btn").hide();
+        $(".bg-container").hide();
+    }
+
+    return {initialize, show, hideTitle, hide};
 })();
 
 const LoginForm = (function(){
@@ -124,6 +129,8 @@ const InstructionPage = (function(){
 
         $(".submit-btn.next").click((e) => {
             e.preventDefault();
+            e.stopPropagation();
+
             FrontPageAudio.playBtnAudio();
             FrontPageAudio.stopbg();
 
@@ -172,8 +179,16 @@ const PairupPage = (function(){
     let findingTimer;
     let findingCount = 0;
     let timeCount = 4;
+    let isFinding = false;
 
     const initialize = function(){
+        $("#cancel-match").click((e) => {
+            e.preventDefault();
+            if (isFinding) {
+                cancelFinding();
+            }
+        });
+
         $("#pairup-bg-filter").hide();
         $(".front.pairup").hide();
         $("#waiting-container").hide();
@@ -186,13 +201,22 @@ const PairupPage = (function(){
     };
 
     const hide = function(){
+        if (isFinding) {
+            cancelFinding();
+        }
         $("#pairup-bg-filter").hide();
         $(".front.pairup").hide();
+        $("#waiting-container").hide();
     };
 
     const showFinding = function(){
+        isFinding = true;
         $("#pairup-header.finding").fadeIn(500);
         $("#waiting-container").fadeIn(500);
+        $("#cancel-match").show();
+
+        FrontPageAudio.stopPairupWaitAudio();
+        FrontPageAudio.playPairupWaitAudio();
 
         Socket.connect();
 
@@ -202,6 +226,8 @@ const PairupPage = (function(){
         }
 
         function animateDots() {
+            if (!isFinding) return;
+            
             findingCount = findingCount % 3 + 1;
             const dots = ".".repeat(findingCount);
             $("#pairup-header.finding span").text(dots);
@@ -212,9 +238,29 @@ const PairupPage = (function(){
         animateDots();
     }
 
+    const cancelFinding = function() {
+        isFinding = false;
+        Socket.cancelMatch();
+        Socket.disconnect();
+        
+        if(findingTimer){
+            clearTimeout(findingTimer);
+            findingTimer = null;
+        }
+        
+        FrontPageAudio.stopPairupWaitAudio();
+        hide();
+        InstructionPage.show();
+        FrontPageAudio.playbg();
+    }
+
     const hideFinding = function(){
+        isFinding = false;
         $("#pairup-header.finding").hide();
         $("#waiting-container").hide();
+        $("#cancel-match").hide();
+
+        FrontPageAudio.stopPairupWaitAudio();
 
         if(findingTimer){
             clearTimeout(findingTimer);
@@ -223,7 +269,9 @@ const PairupPage = (function(){
     }
 
     const showMatched = function(){
+        isFinding = false;
         hideFinding();
+        
         let header = $("#pairup-header");
         if(header.hasClass("finding")){
             header.removeClass("finding");
@@ -249,10 +297,12 @@ const PairupPage = (function(){
             timeCount--;
             if(timeCount > 0){
                 $("#countdown").text(timeCount);
+                FrontPageAudio.playCountdownAudio();
                 setTimeout(countdown, 1000);
             }
             else{
                 $("#countdown").text("Start!");
+                FrontPageAudio.playCountdownNoticeAudio();
                 setTimeout(UI.hideFront, 1000);
             }
         }
@@ -262,11 +312,50 @@ const PairupPage = (function(){
     return { initialize, show, hide, showFinding, hideFinding, showMatched, showCountdown };
 })();
 
+const RankingPage = (function(){
+    const initialize = function(){
+        $("signout-btn").click((e) => {
+            e.preventDefault();
+
+            Socket.endGame();
+            Socket.disconnect();
+            Authentication.signout();
+            UI.initialize();
+        });
+
+        $("#new-game").click(() => {
+            Socket.endGame();
+            hide();
+            InstructionPage.show();
+        })
+
+        $(".signout-container").hide();
+        $(".front.ranking").hide();
+    };
+
+    const show = function(){
+        $(".signout-container").fadeIn(500);
+        $(".front.ranking").fadeIn(500);
+    }
+
+    const hide = function(){
+        $(".signout-container").hide();
+        $(".front.ranking").hide();
+    };
+
+    return { initialize, show, hide };
+})();
+
 const UI = (function(){
     const frontComponents = [LoginForm, RegisterForm, FrontPage, Toast, InstructionPage, PairupPage];
+    const gameComponents = [RankingPage];
 
     const initialize = function() {
         for (const component of frontComponents) {
+            component.initialize();
+        }
+
+        for(const component of gameComponents){
             component.initialize();
         }
     };

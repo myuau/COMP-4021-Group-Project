@@ -1,8 +1,8 @@
 const matchPool = function(io) {
-    let queue = [];
-    let groups = {};
-    let groupCount = 0;
-    let playerGroups = {};
+    let queue = []; // waiting queue
+    let groups = {}; // current groups
+    let groupCount = 0; // number of groups formed
+    let playerGroups = {}; // each player's group
 
     const handleMatchRequest = function(socket) {
         if (queue.includes(socket) || playerGroups[socket.id]) {
@@ -56,6 +56,30 @@ const matchPool = function(io) {
         }
     };
 
+    const handleCancelMatch = function(socket){
+        const queuePosition = queue.indexOf(socket);
+        if (queuePosition !== -1) {
+            queue.splice(queuePosition, 1);
+            console.log(`Player ${socket.id} cancel matching, current queue length: ${queue.length}`);
+        }
+    }
+
+    const handleEndGame = function(groupId){
+        const group = groups[groupId];
+        if(group){
+            const player1 = io.sockets.sockets.get(group.player1);
+            const player2 = io.sockets.sockets.get(group.player2);
+
+            if (player1) player1.leave(groupId);
+            if (player2) player2.leave(groupId);
+
+            delete playerGroups[group.player1];
+            delete playerGroups[group.player2];
+            delete groups[groupId];
+            console.log("delete group: ", groupId);
+        }
+    }
+
     const handleDisconnect = function(socket) {
         const socketId = socket.id;
         
@@ -97,7 +121,9 @@ const matchPool = function(io) {
 
     return { 
         handleMatchRequest, 
-        matchPlayers, 
+        matchPlayers,
+        handleCancelMatch,
+        handleEndGame, 
         handleDisconnect,
         getStatus
     };

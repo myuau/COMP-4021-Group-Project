@@ -49,6 +49,7 @@ const Authentication = (function() {
             onError(err);
         })
     };
+    
     const signout = function(onSuccess, onError) {
         fetch(BASE_URL+"/signout", {
             method: "GET",

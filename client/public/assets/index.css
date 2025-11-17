@@ -7,6 +7,7 @@
     --front-btn-hover-color: #ff9d00;
     --front-btn-active-color: #ff4d01;
     --front-font-color: #efefef;
+    --ranking-font-color: #fbd70f;
 }
 
 *{
@@ -323,10 +324,10 @@ p.cheat{
 }
 
 #waiting-container{
-    width: 800px;
+    width: 700px;
     position: absolute;
     bottom: -50px;
-    left: -150px;
+    left: -200px;
 }
 
 #waiting-container img{
@@ -359,4 +360,59 @@ p.cheat{
     border-bottom: 1px solid black;
     background: white;
     transform: rotate(45deg);
+}
+
+.front-container.ranking{
+    width: 500px;
+    height: 250px;
+    margin-bottom: 30px;
+}
+
+#new-game.submit-btn{
+    padding: 14px 18px;
+}
+
+.signout-container{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+#signout-btn{
+    padding: 10%;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    width: 35px;
+    height: 35px;
+    transition: background-color 0.5s;
+}
+
+#signout-btn:hover{
+    background-color: lightgray;
+}
+
+#signout-btn:active{
+    background-color: lightslategray
+}
+
+#signout-btn img{
+    width: 100%;
+    height: 100%;
+    background-clip: content-box;
+    background-repeat: no-repeat;
+}
+
+#ranking-table{
+    width: 90%;
+}
+
+#ranking-table td{
+    padding: 8px 24px; 
+    font-size: 28px;
+    font-weight: bolder;
+    color: var(--ranking-font-color);
+}
+
+td.score{
+    text-align: right;
 }

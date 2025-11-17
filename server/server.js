@@ -157,6 +157,19 @@ io.on("connection", (socket) => {
         matchPool.handleMatchRequest(socket);
     });
 
+    socket.on("cancel match", () => {
+        matchPool.handleCancelMatch(socket);
+    })
+
+    socket.on("end game", (data) => {
+        matchPool.handleEndGame(data.groupId);
+    })
+
+    // on "order update", "opponent order update", broadcast to the player in the same group
+    // on "move", (x, y, dir), "opponent move", broadcast to the player in the same group(expect himself/herself)
+    // on "update items", (item_list), "opponent update items", broadcast to the player in the same group
+    // on "opponent move", send the opponent movement to the player
+
     socket.on("disconnect", () => {
         matchPool.handleDisconnect(socket);
     });
