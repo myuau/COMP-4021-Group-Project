@@ -21,10 +21,12 @@ const obstacle = function(ctx, x, y) {
 
     // Load the SVG image sheet internally
     const sheet = new Image();
-    sheet.src = "assets/svgs/banana.png";
 
     // --- Private Methods ---
 
+    const setSrc = function(src) {
+        sheet.src = src;
+    }
     /**
      * Sets the position of the obstacle.
      * @param {number} newX - The new x coordinate.
@@ -122,6 +124,7 @@ const obstacle = function(ctx, x, y) {
         show: show,
         hide: hide,
         Visible: Visible,
-        getBoundingBox: getBoundingBox
+        getBoundingBox: getBoundingBox,
+        setSrc: setSrc
     };
 };
