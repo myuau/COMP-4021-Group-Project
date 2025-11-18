@@ -127,6 +127,13 @@ const InstructionPage = (function(){
     const initialize = function(){
         $(".front.instruction").hide();
 
+        $(".signout-btn.instruction").click((e) => {
+            e.preventDefault();
+
+            Authentication.signout();
+            UI.initialize();
+        });
+
         $(".submit-btn.next").click((e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -137,14 +144,18 @@ const InstructionPage = (function(){
             hide();
             PairupPage.show();
         });
+
+        $(".signout-container.instruction").hide();
     }
 
     const show = function(){
         $(".front.instruction").fadeIn(500);
+        $(".signout-container.instruction").fadeIn(500);
     }
     
     const hide = function(){
         $(".front.instruction").fadeOut(500);
+        $(".signout-container.instruction").fadeOut(500);
     }
 
     return {initialize, show, hide};
@@ -178,8 +189,15 @@ const Toast = (function(){
 const PairupPage = (function(){
     let findingTimer;
     let findingCount = 0;
+    let speechTimer;
     let timeCount = 4;
     let isFinding = false;
+    let speechCount = 0;
+    let speech = [
+        "The key to victory is speed! If you can gather all the ingredients as quickly as possible, you'll be able to complete more orders and truly excel!",
+        "Picking up the right ingredients will truly save you precious time in completing each order! But keep in mind, you can only select up to 4 items—so choose wisely and give it your best shot!",
+        "Be mindful of the obstacles that may stand in your way to obtaining the ingredient; they could really slow you down. Thinking ahead and planning carefully will genuinely help you save time and ensure you can complete your orders smoothly."
+    ]
 
     const initialize = function(){
         $("#cancel-match").click((e) => {
@@ -225,6 +243,11 @@ const PairupPage = (function(){
             findingTimer = null;
         }
 
+        if(speechTimer){
+            clearTimeout(speechTimer);
+            speechTimer = null;
+        }
+
         function animateDots() {
             if (!isFinding) return;
             
@@ -235,7 +258,17 @@ const PairupPage = (function(){
             findingTimer = setTimeout(animateDots, 1000);
         }
 
+        function switchSpeech() {
+            if (!isFinding) return;
+            
+            speechCount = (speechCount + 1) % speech.length;
+            $(".chat-bubble").text(speech[speechCount]);
+
+            speechTimer = setTimeout(switchSpeech, 10000);
+        }
+
         animateDots();
+        switchSpeech();
     }
 
     const cancelFinding = function() {
@@ -247,7 +280,12 @@ const PairupPage = (function(){
             clearTimeout(findingTimer);
             findingTimer = null;
         }
-        
+
+        if(speechTimer){
+            clearTimeout(speechTimer);
+            speechTimer = null;
+        }
+
         FrontPageAudio.stopPairupWaitAudio();
         hide();
         InstructionPage.show();
@@ -265,6 +303,11 @@ const PairupPage = (function(){
         if(findingTimer){
             clearTimeout(findingTimer);
             findingTimer = null;
+        }
+
+        if(speechTimer){
+            clearTimeout(speechTimer);
+            speechTimer = null;
         }
     }
 
@@ -314,7 +357,7 @@ const PairupPage = (function(){
 
 const RankingPage = (function(){
     const initialize = function(){
-        $("signout-btn").click((e) => {
+        $(".signout-btn.ranking").click((e) => {
             e.preventDefault();
 
             Socket.endGame();
@@ -329,12 +372,12 @@ const RankingPage = (function(){
             InstructionPage.show();
         })
 
-        $(".signout-container").hide();
+        $(".signout-container.ranking").hide();
         $(".front.ranking").hide();
     };
 
     const show = function(){
-        $(".signout-container").fadeIn(500);
+        $(".signout-container.ranking").fadeIn(500);
         $(".front.ranking").fadeIn(500);
     }
 

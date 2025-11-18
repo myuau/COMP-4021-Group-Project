@@ -378,7 +378,7 @@ p.cheat{
     top: 10px;
 }
 
-#signout-btn{
+.signout-btn{
     padding: 10%;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.3);
@@ -387,15 +387,15 @@ p.cheat{
     transition: background-color 0.5s;
 }
 
-#signout-btn:hover{
+.signout-btn:hover{
     background-color: lightgray;
 }
 
-#signout-btn:active{
+.signout-btn:active{
     background-color: lightslategray
 }
 
-#signout-btn img{
+.signout-btn img{
     width: 100%;
     height: 100%;
     background-clip: content-box;
