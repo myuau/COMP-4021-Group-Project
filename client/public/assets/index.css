@@ -52,8 +52,8 @@ html, body {
     position: absolute;
     top: 60%;
     left: 40%;
-    width: 30%;
-    height: 20%;
+    width: 300px;
+    height: 100px;
     background-color: var(--front-caption-color);
     color: #ffffff;
     font-size: 50px;

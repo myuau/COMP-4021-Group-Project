@@ -343,6 +343,7 @@ const PairupPage = (function(){
     }
 
     const showCountdown = function(){
+        hideFinding();
         $("#countdown").fadeIn(500);
         timeCount = 4;
 
@@ -356,7 +357,10 @@ const PairupPage = (function(){
             else{
                 $("#countdown").text("Start!");
                 FrontPageAudio.playCountdownNoticeAudio();
-                setTimeout(UI.hideFront, 1000);
+                setTimeout(() => {
+                    UI.hideFront();
+                    location.replace("/play-page.html");
+                }, 1000);
             }
         }
         setTimeout(countdown, 500);

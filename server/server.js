@@ -148,6 +148,8 @@ app.get("/signout", (req, res) => {
     return res.json({ status: "success" });
 });
 
+// GET order pool
+
 io.use((socket, next) => {
     gameSession(socket.request, {}, next);
 });
@@ -168,7 +170,10 @@ io.on("connection", (socket) => {
     // on "order update", "opponent order update", broadcast to the player in the same group
     // on "move", (x, y, dir), "opponent move", broadcast to the player in the same group(expect himself/herself)
     // on "update items", (item_list), "opponent update items", broadcast to the player in the same group
-    // on "opponent move", send the opponent movement to the player
+    // on "opponent move", send the opponent movement to the player(?)
+    // on "update state", (score), "opponent update state", broadcast to the players
+    // broadcast "banana position" to the players
+    // on "final score", emit the final score the players(for ranking page)
 
     socket.on("disconnect", () => {
         matchPool.handleDisconnect(socket);
