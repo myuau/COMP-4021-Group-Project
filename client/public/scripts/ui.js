@@ -12,7 +12,9 @@ const FrontPage = (function(){
     }
 
     const show = function(){
+        $("#front-bg").removeClass("front-bg-filter");
         $("#start-btn").show();
+        $("#front-bg.title").fadeIn(500);
     }
     
     const hideTitle = function(){
@@ -25,7 +27,13 @@ const FrontPage = (function(){
         $(".bg-container").hide();
     }
 
-    return {initialize, show, hideTitle, hide};
+    const showbg = function(){
+        $(".bg-container").show();
+        $("#front-bg").addClass("front-bg-filter");
+        hideTitle();
+    }
+
+    return {initialize, show, hideTitle, hide, showbg};
 })();
 
 const LoginForm = (function(){
@@ -132,6 +140,8 @@ const InstructionPage = (function(){
 
             Authentication.signout();
             UI.initialize();
+            FrontPage.show();
+            FrontPageAudio.stopbg();
         });
 
         $(".submit-btn.next").click((e) => {

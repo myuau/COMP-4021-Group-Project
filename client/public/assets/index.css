@@ -103,8 +103,8 @@ html, body {
 }
 
 .front-container.login{
-    width: 320px;
-    height: 220px;
+    width: 70%;
+    height: 30%;
 }
 
 .front-container.register{
