@@ -161,24 +161,58 @@ io.on("connection", (socket) => {
 
     socket.on("cancel match", () => {
         matchPool.handleCancelMatch(socket);
-    })
+    });
 
     socket.on("end game", (data) => {
         matchPool.handleEndGame(data.groupId);
+    });
+
+    socket.on("ready", () => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.setReady(socket.id, true);
+        }
     })
 
-    // on "order update", "opponent order update", broadcast to the player in the same group
-    // on "move", (x, y, dir), "opponent move", broadcast to the player in the same group(expect himself/herself)
-    // on "update items", (item_list), "opponent update items", broadcast to the player in the same group
-    // on "opponent move", send the opponent movement to the player(?)
-    // on "update state", (score), "opponent update state", broadcast to the players
-    // broadcast "banana position" to the players
-    // on "final score", emit the final score the players(for ranking page)
+    socket.on("move", (data) => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handlePlayerMove(socket.id, data.dir);
+        }
+    });
+
+    socket.on("update orders", (data) => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handleOrders(socket.id, data.orders);
+        }
+    });
+
+    socket.on("update items", (data) => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handleItems(socket.id, data.items);
+        }
+    });
+
+    socket.on("update score", (data) => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handleScore(socket.id, data.score);
+        }
+    });
+
+    socket.on("game field", (data) => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if (gameRoom) {
+            gameRoom.getGameField(data.boundingBox);
+        }
+    });
 
     socket.on("disconnect", () => {
         matchPool.handleDisconnect(socket);
     });
-})
+});
 
 httpServer.listen(8000, ()=>{
     console.log("The server side is running at port 8000...");
