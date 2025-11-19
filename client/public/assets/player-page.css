@@ -52,17 +52,6 @@ body, html {
     text-indent: -9999px; /* Hides any possible text content off-screen */
 }
 
-
-
-#fried-chips-cabinet {
-    position: absolute;
-    width: 120px; 
-    height: 130px;
-    /* Move cabinet here */
-    top: 20px;
-    left: 240px;
-}
-
 .top{
     position: absolute;
     transform: skew(-20deg, 0deg);
@@ -73,48 +62,62 @@ body, html {
 .cab-side{
     position: absolute;
 }
-#fried-chips{
-    transform: translate(23px,17px);
-}
 
-#coke-cabinet {
-    z-index: 10;
+
+#fried-chips-cabinet {
     position: absolute;
-    width: 120px; 
-    height: 130px;
+    width: 20%; 
+    height: 20%;
     /* Move cabinet here */
-    top: 20px;
-    left: 620px;
+    top: 5%;
+    left: 5%;
 }
-
-#coke {
-    transform: translate(35px,17px);
-}
-
 #bread-cabinet {
     z-index: 10;
     position: absolute;
-    width: 120px; 
-    height: 130px;
+    width: 20%; 
+    height: 20%;
     /* Move cabinet here */
-    top: 20px;
-    left: 420px;
+    top: 5%;
+    left: 25%;
 }
-
-#bread {
-    transform: translate(28px,18px);
+#coke-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    /* Move cabinet here */
+    top: 5%;
+    left: 45%;
 }
-
 #fish-cabinet {
     z-index: 10;
     position: absolute;
-    width: 120px; 
-    height: 130px;
+    width: 20%; 
+    height: 20%;
     /* Move cabinet here */
-    top: 20px;
-    left: 850px;
+    top: 5%;
+    left: 65%;
+}
+#trash-bin {
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    /* Move bin here */
+    /* Move cabinet here */
+    top: 5%;
+    left: 85%;
 }
 
+#fried-chips{
+    transform: translate(23px,17px);
+}
+#bread {
+    transform: translate(28px,18px);
+}
+#coke {
+    transform: translate(35px,17px);
+}
 #fish {
     transform: translate(7px,10px);
 }
@@ -122,126 +125,125 @@ body, html {
 #beef-cabinet {
     z-index: 10;
     position: absolute;
-    width: 120px; 
-    height: 130px;
+    width: 20%; 
+    height: 20%;
     /* Move cabinet here */
-    top: 300px;
-    left: 40px;
+    top: 40%;
+    left: 0%;
+}
+#lettuce-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    /* Move cabinet here */
+    top: 40%;
+    left: 20%;
+}
+#cheese-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    /* Move cabinet here */
+    top: 40%;
+    left: 55%;
+}
+#chicken-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    /* Move cabinet here */
+    top: 40%;
+    left: 75%;
 }
 
 #beef {
     transform: translate(17px,17px);
 }
-
-#chicken-cabinet {
-    z-index: 10;
-    position: absolute;
-    width: 120px; 
-    height: 130px;
-    /* Move cabinet here */
-    top: 300px;
-    left: 1200px;
+#lettuce {
+    transform: translate(10px,6px);
 }
-
+#cheese {
+    transform: translate(30px,15px);
+}
 #chicken {
     transform: translate(10px,-5px);
 }
 
-#lettuce-cabinet {
-    z-index: 10;
-    position: absolute;
-    width: 120px; 
-    height: 130px;
-    /* Move cabinet here */
-    top: 300px;
-    left: 220px;
-}
-
-#lettuce {
-    transform: translate(10px,6px);
-}
-
-#cheese-cabinet {
-    z-index: 10;
-    position: absolute;
-    width: 120px; 
-    height: 130px;
-    /* Move cabinet here */
-    top: 300px;
-    left: 1000px;
-}
-
-#cheese {
-    transform: translate(30px,15px);
-}
-
-
-#trash-bin {
-    position: absolute;
-    width: 90px; 
-    height: 130px;
-    /* Move bin here */
-    top: 30px;
-    left: 1100px;
-}
-
 
 #counter {
+    z-index: 10;
     position: absolute;
-    top: 0px;
-    left: 0px;
+    height: 10vh;
+    width: 25vw;
 }
 
 #counter text {
-    font-size: 350%;
+    font-size: 8vh;
     fill: white;
     stroke: black;
-    stroke-width: 1px;
+    stroke-width: 0.1vw;
 }
 
 #balance-container {
+    z-index: 10;
     position: absolute;
-    top: -10px;
-    left: 0px;
+    height: 10vh;
+    width: 25vw;
+    top: 5vh;
 }
 
 #balance-container text {
-    font-size: 200%;
+    font-size: 5vh;
     fill: green;
     stroke: black;
-    stroke-width: 0.5px;
+    stroke-width: 0.05vw;
 }
 
 #player1-holding, #player2-holding{
     position: absolute;
-    
+    height: 15%;
+    width: 28%;;
     /* Move it here */
-    top: 510px;
-    left: 0px;
+    top: 64%;
+    left: 0%;
 }
 #player2-holding {
-    left: 1150px;
+    left: 76%;
 }
-.bag-ingredient-icon {
-    /* Set a small, fixed size for the icons in the bag */
-    width: 35px; 
-    height: 35px; 
-    /* Ensures the image scales down correctly without cropping */
+.held-food-group1{
+    display: flex; 
+    flex-direction: row;
+    /* Ensure the container doesn't exceed the width of the order item */
+    width: 20vw;
+    height: 20vh;
+    justify-content: center;
+    align-items: center;
+}
+.bag-item {
+    width: 23%;
+    height: 70%;
     object-fit: contain; 
 }
 
 #table{
     position: absolute;
     /* Move it here */
-    top: 510px;
-    left: 320px;
+    height: 45%;
+    width: 50%;
+    top: 64%;
+    left: 25.5%;
 }
 
-#cashier{
+#cashier-counter{
     position: absolute;
     /* Move it here */
-    top: 440px;
-    left: 680px;
+    height: 200%;
+    width: 180%;
+    top: 54%;
+    left: 44%;
 }
 /* --- Lower Part: Order Area --- */
 #order-area {
@@ -256,43 +258,46 @@ body, html {
 
 .player-orders {
     /* Each side takes up 50% of the width */
-    flex-basis: 49.99%; 
-    padding: 10px;
-    overflow-y: auto; /* Adds a scrollbar if orders overflow */
+    width: 49.9%;
+    padding: 1%;
     background-color: #ec411f;
-    border:#862511, solid 6px;
+    border:#862511, solid 0.3vw;
     border-radius: 10px;
 }
 
 .player-orders h2 {
+    font-size: 1.8vw;
     text-align: center;
     color: #fff; /* Dark brown text */
-    margin-bottom: 10px;
+    margin-top: 0vw;
+    margin-bottom: 0.2vw;
 }
 
 .order-list {
     list-style-type: none;
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 0.8vw;
+    height: 100%;
+    width: 100%;
 }
 
 .order-item {
     background-color: #fffefa; /* Creamy paper color */
-    border: 2px solid #a0a0a0;
-    border-radius: 5px;
-    padding: 8px 12px;
-    margin-bottom: 8px;
+    border: 0.15vw solid #a0a0a0;
+    border-radius: 0.2vw;
+    padding: 0.1vw 0.1vw;
+    margin-bottom: 0.2vw;
     font-weight: bold;
     /* Aligns item name left and price right */
     display: flex;
     flex-direction: column;
     justify-content: space-between; 
 
-    width: calc((100% - 20px) / 3);
+    width: calc((100% - 3%) / 3);
     flex-shrink: 0;
     
-    height: 90px;
+    height: 70%;
     display: flex;
     align-items: center;
 }
@@ -302,79 +307,48 @@ body, html {
     /* Pushes the order-type to the left and order-price to the right */
     justify-content: space-between; 
     align-items: center;
-    margin-bottom: 8px; /* Adds space above the ingredient bar */
     font-weight: bold;
-    border-bottom: 1px solid #eee; /* Visual separation line */
-    padding-bottom: 5px;
+    border-bottom: 0.2vw solid #eee; /* Visual separation line */
+    padding-bottom: 0.4vh;
+    width: 12vw;
+    height: 10vh;
 }
 
 .order-type {
     /* 4. Allow the order type span to take up most of the available space */
     /* This pushes the price and time to the right */
+    font-size: 1.2vw;
     flex-grow: 1; 
     font-weight: bold;
+    text-align: center;
     color: #333;
 }
 
 .order-price {
     /* 5. Ensure the price has a fixed width and spacing */
-    width: 50px; 
+    font-size: 1.2vw;
+    width: 1.2vw; 
     text-align: right;
-    margin-right: 5px;
     color: green; /* Visual cue for money */
-}
-
-.ingredient-icon {
-    /* Set a fixed size */
-    width: 50px; 
-    height: 60px; 
-    
-    /* Ensure the image scales down correctly within the bounding box */
-    object-fit: contain; 
+    margin-right: 0.5vw;
 }
 
 .ingredient-icons {
     /* Use Flexbox to align them horizontally and manage overflow */
     display: flex; 
-    align-items: center; /* Vertically centers the icons */
-    gap: 5px;
+    flex-direction: row;
     /* Ensure the container doesn't exceed the width of the order item */
-    max-width: 100%;
+    width: 20vw;
+    height: 20vh;
+    justify-content: center;
+    align-items: center;
 }
 
-/* --- Placeholder Game Elements --- */
-/* You can delete these; they are just for visualization */
-.player {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    color: white;
-    font-weight: bold;
-    border: 3px solid white;
-}
-
-#player1 {
-    background-color: #007bff; /* Blue */
-    top: 40%;
-    left: 30%;
-}
-
-#player2 {
-    background-color: #dc3545; /* Red */
-    top: 40%;
-    left: 40%;
-}
-
-.station {
-    position: absolute;
-    background-color: #8b5a40; /* Brown counter */
-    border: 4px solid #6b4a3a;
-    border-radius: 5px;
-    top: 55%;
-    left: 30%;
-    width: 200px;
-    height: 60px;
+.ingredient-icon {
+    /* Set a fixed size */
+    width: 4vw; 
+    height: 14vh; 
+    translate: -0.1vw -5vh;
+    /* Ensure the image scales down correctly within the bounding box */
+    object-fit: contain; 
 }

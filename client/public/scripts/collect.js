@@ -7,74 +7,73 @@ const STATIC_CABINET_BOUNDARIES = [
         // These values MUST be determined once after the page loads
         // and the layout is stable (e.g., from a final getBoundingClientRect() call).
         top: 20,    // Top screen pixel coordinate
-        left: 150,    // Left screen pixel coordinate
-        bottom: 180, // Bottom screen pixel coordinate (top + height)
-        right: 230,   // Right screen pixel coordinate (left + width)
+        left: 70,    // Left screen pixel coordinate
+        bottom: 220, // Bottom screen pixel coordinate (top + height)
+        right: 175,   // Right screen pixel coordinate (left + width)
     },
     {
         id: 'bread-cabinet',
         top: 20,
-        left: 250,
-        bottom: 180,
-        right: 330,
+        left: 230,
+        bottom: 220,
+        right: 320,
 
     },
     {
         id: 'coke-cabinet',
         top: 20,
-        left: 355,
-        bottom: 180,
-        right: 440,
+        left: 390,
+        bottom: 220,
+        right: 490,
     },
     {
         id: 'fish-cabinet',
         top: 20,
-        left: 480,
-        bottom: 180,
-        right: 560,
+        left: 550,
+        bottom: 220,
+        right: 640,
 
 
     },
     {
         id: 'trash-bin',
         top: 20,
-        left: 595,
-        bottom: 180,
-        right: 660,
+        left: 720,
+        bottom: 220,
+        right: 800,
 
     },
 
     {
         id: 'beef-cabinet',
         top: 280,
-        left: 45,
-        bottom: 410,
-        right: 125,
+        left: 40,
+        bottom: 400,
+        right: 130,
 
     },
     {
         id: 'lettuce-cabinet',
         top: 280,
-        left: 145,
-        bottom: 410,
-        right: 215,
-
+        left: 190,
+        bottom: 400,
+        right: 285,
 
     },
     {
         id: 'cheese-cabinet',
         top: 280,
-        left: 560,
-        bottom: 410,
-        right: 645,
+        left: 460,
+        bottom: 400,
+        right: 570,
 
     },
     {
         id: 'chicken-cabinet',
         top: 280,
-        left: 675,
-        bottom: 410,
-        right: 755,
+        left: 630,
+        bottom: 400,
+        right: 730,
 
     },
 
@@ -86,6 +85,37 @@ const STATIC_CABINET_BOUNDARIES = [
         right: 600,
     }
 ];
+
+function updateCabinetBoundariesForEach() {
+    // Loop directly over the elements (objects) in the array
+    for (const cabinet of STATIC_CABINET_BOUNDARIES) {
+        
+        // 1. Get the corresponding HTML element using the cabinet's 'id' property
+        const element = document.getElementById(cabinet.id);
+
+        if (!element) {
+            console.warn(`Warning: HTML element with ID '${cabinet.id}' was not found.`);
+            // Skip to the next object if the element doesn't exist
+            continue; 
+        }
+
+        // 2. Retrieve the bounding box coordinates relative to the viewport
+        const rect = element.getBoundingClientRect();
+
+        // 3. Update the properties of the current object directly
+        // The values from getBoundingClientRect are correct for viewport coordinates.
+        const width = (rect.right - rect.left)/10;
+        cabinet.top = rect.top-width*1;
+        cabinet.left = rect.left-width*1.2;
+        cabinet.bottom = rect.bottom-width*1;
+        cabinet.right = rect.right-width*8;
+        // cabinet.top = rect.top;
+        // cabinet.left = rect.left;
+        // cabinet.bottom = rect.bottom;
+        // cabinet.right = rect.right;
+    }
+    console.log("Updated Cabinet Boundaries:", STATIC_CABINET_BOUNDARIES);
+}
 
 const CABINET_INGREDIENT_MAP = {
     // Key (Cabinet ID) : Value (Ingredient Name)
@@ -157,30 +187,29 @@ function discardIngredient() {
 function renderPlayerBag() {
     const gContainer = document.getElementById("held-food-group1");
 
+    // Clear the container
     gContainer.innerHTML = '';
 
-    const foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
-    foreignObject.setAttribute('width', '300');
-    foreignObject.setAttribute('height', '150');
-
-    const htmlDiv = document.createElement('div');
-
-    htmlDiv.style.cssText = 'display: flex; align-items: center; gap: 4px; height: 100%;';
-    
-
+    // 1. Generate the HTML for the ingredient images
     const imagesHtml = playerBag.map(ingredient => {
         const src = INGREDIENT_SVG_PATHS[ingredient]; 
-        return `<img src="${src}" 
-                alt="${ingredient} icon" 
-                class="bag-item" 
-                style="width: 70px; height: 70px;">`;
+        // Use a more compact string structure
+        return `<img src="${src}" alt="${ingredient} icon" class="bag-item">`;
     }).join('');
     
-    htmlDiv.innerHTML = imagesHtml;
+    // 2. Wrap the image HTML in the necessary SVG/HTML structure as a single string
+    // This avoids creating foreignObject and htmlDiv objects programmatically, 
+    // letting the browser parse the structure from the string.
+    const fullHtml = `
+        <foreignObject width="440" height="150">
+            <div style="display: flex; align-items: center; gap: 13px; height: 100%; width: 100%'; flex-wrap: wrap;">
+                ${imagesHtml}
+            </div>
+        </foreignObject>
+    `;
     
-    foreignObject.appendChild(htmlDiv);
-    
-    gContainer.appendChild(foreignObject);
+    // 3. Insert the full structure into the SVG group
+    gContainer.innerHTML = fullHtml;
 }
 
 function BoundingBoxOverlap(playerBox, cabinetId) {
