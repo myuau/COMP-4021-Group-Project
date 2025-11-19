@@ -65,8 +65,9 @@ const Socket = (function() {
             // hide game area, show ranking page
         })
 
-        socket.on("match success", (group) => {
-            groupId = group.groupId;
+        // get group information after pairup
+        socket.on("match success", ({groupId, players, yourRole}) => {
+            groupId = groupId;
             PairupPage.showMatched();
         });
     };
