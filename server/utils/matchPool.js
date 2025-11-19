@@ -1,6 +1,9 @@
+const gameRoom = require("./gameRoom.js");
+
 const matchPool = function(io) {
-    let queue = []; // waiting queue
+    let queue = []; // waiting queue (socket of each player)
     let groups = {}; // current groups
+    let gameRooms = {}; // game rooms
     let groupCount = 0; // number of groups formed
     let playerGroups = {}; // each player's group
 
@@ -25,14 +28,15 @@ const matchPool = function(io) {
 
             groupCount++;
             const targetGroupId = groupCount.toString();
-            
-            player1.join(targetGroupId);
-            player2.join(targetGroupId);
+
+            let room = gameRoom(targetGroupId, player1, player2, io);
+            gameRooms[targetGroupId] = room;
 
             const group = {
                 player1: player1.id,
                 player2: player2.id,
-                createdAt: Date.now()
+                createdAt: Date.now(),
+                room: room
             };
 
             groups[targetGroupId] = group;
@@ -90,6 +94,11 @@ const matchPool = function(io) {
         }
 
         const targetGroupId = playerGroups[socketId];
+        if (targetGroupId && gameRooms[targetGroupId]) {
+            gameRooms[targetGroupId].cleanup();
+            delete gameRooms[targetGroupId];
+        }
+        
         if (targetGroupId) {
             const targetGroup = groups[targetGroupId];
             if (targetGroup) {
@@ -119,13 +128,26 @@ const matchPool = function(io) {
         };
     };
 
+    // return the game room based on the group id
+    const getGameRoom = function(groupId){
+        return gameRooms[groupId];
+    }
+
+    // return the game room of the player
+    const getPlayerRoom = function(playerId){
+        let groupId = playerGroups[playerId];
+        return groupId ? gameRooms[groupId] : null;
+    }
+
     return { 
         handleMatchRequest, 
         matchPlayers,
         handleCancelMatch,
         handleEndGame, 
         handleDisconnect,
-        getStatus
+        getStatus,
+        getGameRoom,
+        getPlayerRoom
     };
 };
 
