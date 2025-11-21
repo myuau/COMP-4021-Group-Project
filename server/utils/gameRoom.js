@@ -111,9 +111,17 @@ const gameRoom = function(groupId, player1, player2, io){
         });
     };
 
-    const handlePlayerMove = function(playerId, dir){
-        broadcastToOther(playerId, "opponent move", { playerId, direction: dir });
+    const handlePlayerMove = function(playerId, isMoved, dir){
+        broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, direction: dir });
     };
+
+    const handlePlayerSpeedup = function(playerId, speedup){
+        broadcastToOther(playerId, "opponent speedup", { playerId, speedup: speedup });
+    };
+
+    const handlePlayerTrap = function(playerId){
+        broadcastToOther(playerId, "opponent trap", null);
+    }
 
     const handleOrders = function(playerId, orders){
         broadcastToOther(playerId, "opponent orders", { playerId, orders });
@@ -212,6 +220,7 @@ const gameRoom = function(groupId, player1, player2, io){
         setReady,
         startGame,
         handlePlayerMove,
+        handlePlayerSpeedup,
         handleItems,
         handleObstacle,
         handleOrders,

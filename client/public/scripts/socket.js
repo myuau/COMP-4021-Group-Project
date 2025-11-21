@@ -32,7 +32,7 @@ const Socket = (function() {
         });
 
         // receive the movement of the opponent
-        socket.on("opponent move", ({dir}) => {
+        socket.on("opponent move", ({isMoved, dir}) => {
             // update the opponent player in UI
         });
 
@@ -51,12 +51,22 @@ const Socket = (function() {
             // update the score of the opponent in UI
         })
 
+        // receive if the opponent speedup
+        socket.on("opponent speedup", ({speedup})=>{
+            // update when the opponent speedup
+        })
+
         // get the position of the obstacle
         // position: {x, y}
         socket.on("update obstacle", ({position}) => {
             // update the position of the obstacle
 
         });
+
+        // receive if the opponent is trapped by the obstacle
+        socket.on("opponent trap", () => {
+            // update the opponent animation
+        })
 
         // get the final score
         // ranking: array<Object>
@@ -66,6 +76,7 @@ const Socket = (function() {
         })
 
         // get group information after pairup
+        // groupId, players()
         socket.on("match success", ({groupId, players, yourRole}) => {
             groupId = groupId;
             PairupPage.showMatched();
@@ -101,8 +112,9 @@ const Socket = (function() {
     // - `2` - moving up
     // - `3` - moving to the right
     // - `4` - moving down
-    const playerMove = function(dir){
+    const playerMove = function(isMoved, dir){
         socket.emit("move", {
+            isMoved: isMoved,
             dir: dir
         });
     }
@@ -123,9 +135,18 @@ const Socket = (function() {
         });
     }
 
+    // update the score of the player to the server
     const updateScore = function(score){
         socket.emit("update score", {
             score: score
+        })
+    }
+
+    // update if the player speedup to the server
+    // speedup: true/ false
+    const playerSpeedup = function(speedup){
+        socket.emit("speedup", {
+            speedup: speedup
         })
     }
 

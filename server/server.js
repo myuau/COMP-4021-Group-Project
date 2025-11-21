@@ -177,9 +177,23 @@ io.on("connection", (socket) => {
     socket.on("move", (data) => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if(gameRoom){
-            gameRoom.handlePlayerMove(socket.id, data.dir);
+            gameRoom.handlePlayerMove(socket.id, data.isMoved, data.dir);
         }
     });
+
+    socket.on("speedup", (data) => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handlePlayerSpeedup(socket.id, data.speedup);
+        }
+    });
+
+    socket.on("trap", () => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handlePlayerSpeedup(socket.id);
+        }
+    })
 
     socket.on("update orders", (data) => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
