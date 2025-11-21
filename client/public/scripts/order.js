@@ -1,3 +1,7 @@
+const MAX_ORDERS = 3;
+const player1OrderElement = document.getElementById('order1-list');
+const player2OrderElement = document.getElementById('order2-list');
+
 // Order pool
 const ORDER_POOL = [
     { 
@@ -45,6 +49,21 @@ const INGREDIENT_SVG_PATHS = {
 
 const ORDER_GENERATION_INTERVAL = 2500;
 
+let OrderList1 = [];
+let OrderList2 = [];
+const lists = [
+    {
+        id: 'player1',
+        list: OrderList1,
+        element: player1OrderElement
+    },
+    {
+        id: 'player2',
+        list: OrderList2,
+        element: player2OrderElement
+    }
+];
+
 function generateRandomOrder() {
     // 1. Randomly select one item from the pool
     const randomIndex = Math.floor(Math.random() * ORDER_POOL.length);
@@ -65,19 +84,19 @@ function generateRandomOrder() {
 }
 
 function addNewOrder() {
-    if(ordersList.length < MAX_ORDERS) {
+    if(OrderList1.length < MAX_ORDERS) {
         const newOrder = generateRandomOrder();
-        ordersList.push(newOrder);
+        OrderList1.push(newOrder);
     }
     renderOrders();
 }
 
 function completeOrder(orderType) {
     // 1. Find the index of the order with the given ID
-    const index = ordersList.findIndex(order => order.type === orderType);
+    const index = OrderList1.findIndex(order => order.type === orderType);
 
     if (index !== -1) {
-        const completedOrder = ordersList.splice(index, 1); // Remove 1 item at 'index'
+        const completedOrder = OrderList1.splice(index, 1); // Remove 1 item at 'index'
         console.log(`Order completed: ${completedOrder[0].type}.`);
         
         // 2. Rearrange the list (re-render)
@@ -95,55 +114,59 @@ function completeOrder(orderType) {
 }
 
 function renderOrders() {
-    // 1. Clear the existing HTML content
-    playerOrderElement.innerHTML = '';
+
+    for(const item of lists) {
+        if(item.id === 'player1') {
+        item.element.innerHTML = ''; // Clear existing content
+
+        item.list.forEach(order => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('order-item');
+            // Safely set the ID, only if order.id exists, otherwise leave it off
+            if (order.id !== undefined) {
+                 listItem.id = order.id; 
+            }
     
-    // 2. Build the new list from the array
-    ordersList.forEach(order => {
-        const listItem = document.createElement('li');
-        listItem.classList.add('order-item');
-        // Safely set the ID, only if order.id exists, otherwise leave it off
-        if (order.id !== undefined) {
-             listItem.id = order.id; 
-        }
-
-        // Add order details
-        listItem.innerHTML = `
-            <div class="order-header-bar">
-                <span class="order-type">${order.type.toUpperCase()}</span>
-                <span class="order-price">$${order.price}</span>
-            </div>
-        `;
-
-        const ingredientsContainer = document.createElement('div');
-        ingredientsContainer.classList.add('ingredient-icons');
-
-        // --- START OF INGREDIENT ITERATION ---
-        
-        // Safety Check: Ensure order.ingredients exists and is an array before trying to iterate.
-        if (Array.isArray(order.ingredients)) {
-            const imagesHtml = order.ingredients.map(ingredient => {
-                // Get the path, or use a placeholder if the path is missing (optional safety)
-                const src = INGREDIENT_SVG_PATHS[ingredient] || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; 
-                
-                // Return the full <img> tag string
-                return `<img src="${src}" alt="${ingredient} icon" class="ingredient-icon">`;
-            }).join(''); // Combine the strings into a single block of HTML
+            // Add order details
+            listItem.innerHTML = `
+                <div class="order-header-bar">
+                    <span class="order-type">${order.type.toUpperCase()}</span>
+                    <span class="order-price">$${order.price}</span>
+                </div>
+            `;
+    
+            const ingredientsContainer = document.createElement('div');
+            ingredientsContainer.classList.add('ingredient-icons');
+    
+            // --- START OF INGREDIENT ITERATION ---
             
-            ingredientsContainer.innerHTML = imagesHtml;
+            // Safety Check: Ensure order.ingredients exists and is an array before trying to iterate.
+            if (Array.isArray(order.ingredients)) {
+                const imagesHtml = order.ingredients.map(ingredient => {
+                    // Get the path, or use a placeholder if the path is missing (optional safety)
+                    const src = INGREDIENT_SVG_PATHS[ingredient] || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='; 
+                    
+                    // Return the full <img> tag string
+                    return `<img src="${src}" alt="${ingredient} icon" class="ingredient-icon">`;
+                }).join(''); // Combine the strings into a single block of HTML
+                
+                ingredientsContainer.innerHTML = imagesHtml;
+            }
+    
+            // --- END OF INGREDIENT ITERATION ---
+    
+            listItem.appendChild(ingredientsContainer);
+    
+            // Append to the UL element
+            item.element.appendChild(listItem);
+        });
         }
+    }
 
-        // --- END OF INGREDIENT ITERATION ---
-
-        listItem.appendChild(ingredientsContainer);
-
-        // Append to the UL element
-        playerOrderElement.appendChild(listItem);
-    });
 }
 
 function checkEmptyList() {
-    if (ordersList.length === 0) {
+    if (OrderList1.length === 0) {
         console.log("List empty! Generating a guaranteed order.");
         addNewOrder();
     }
@@ -155,11 +178,11 @@ function gameTick() {
 
     // --- 1. Check for Expired Orders ---
     // Iterate backwards to safely remove items
-    for (let i = ordersList.length - 1; i >= 0; i--) {
-        const order = ordersList[i];
+    for (let i = OrderList1.length - 1; i >= 0; i--) {
+        const order = OrderList1[i];
         
         if (currentTime >= order.finishTime) {
-            ordersList.splice(i, 1); // Remove the expired order
+            OrderList1.splice(i, 1); // Remove the expired order
             console.log(`Order failed (Time Up): ${order.type}.`);
             ordersChanged = true;
         }
@@ -169,7 +192,7 @@ function gameTick() {
     const timeSinceLast = currentTime - lastGenerationTime;
 
     if (timeSinceLast >= ORDER_GENERATION_INTERVAL) {
-        if (ordersList.length < MAX_ORDERS) {
+        if (OrderList1.length < MAX_ORDERS) {
             addNewOrder(); // This function now *only* adds an order
             ordersChanged = true;
         }
@@ -178,7 +201,7 @@ function gameTick() {
     }
     
     // --- 3. Check for Empty List (if something was removed) ---
-    if (ordersChanged && ordersList.length === 0) {
+    if (ordersChanged && OrderList1.length === 0) {
         // This check ensures that if the list was wiped by expirations,
         // we get one new order immediately.
         addNewOrder();
@@ -197,7 +220,7 @@ function endGameTick(id) {
     console.log("Game Tick stopped.");
 }
 
-function removeOrderFromList(completeOrder, ordersList, playerOrderElement) {
+function removeOrderFromList(completeOrder, ordersList) {
     const index = ordersList.indexOf(completeOrder);
     if (index !== -1) {
         ordersList.splice(index, 1);

@@ -1,5 +1,18 @@
-const playerBag = [];
+let player1Bag = [];
+let player2Bag = [];
 const MAX_ITEMS = 4;
+const Bags = [
+    {
+        id: 'player1-bag',
+        bagId: "held-food-group1",
+        bag: player1Bag
+    },
+    {
+        id: 'player2-bag',
+        bagId: "held-food-group1",
+        bag: player2Bag
+    }
+];
 
 const STATIC_CABINET_BOUNDARIES = [
     {
@@ -7,46 +20,46 @@ const STATIC_CABINET_BOUNDARIES = [
         // These values MUST be determined once after the page loads
         // and the layout is stable (e.g., from a final getBoundingClientRect() call).
         top: 20,    // Top screen pixel coordinate
-        left: 70,    // Left screen pixel coordinate
+        left: 105,    // Left screen pixel coordinate
         bottom: 220, // Bottom screen pixel coordinate (top + height)
-        right: 175,   // Right screen pixel coordinate (left + width)
+        right: 205,   // Right screen pixel coordinate (left + width)
     },
     {
         id: 'bread-cabinet',
         top: 20,
-        left: 230,
+        left: 270,
         bottom: 220,
-        right: 320,
+        right: 365,
 
     },
     {
         id: 'coke-cabinet',
         top: 20,
-        left: 390,
+        left: 430,
         bottom: 220,
-        right: 490,
+        right: 520,
     },
     {
         id: 'fish-cabinet',
         top: 20,
-        left: 550,
+        left: 590,
         bottom: 220,
-        right: 640,
+        right: 690,
 
 
     },
     {
         id: 'trash-bin',
-        top: 20,
+        top: 70,
         left: 720,
-        bottom: 220,
+        bottom: 270,
         right: 800,
 
     },
 
     {
         id: 'beef-cabinet',
-        top: 280,
+        top: 320,
         left: 40,
         bottom: 400,
         right: 130,
@@ -54,7 +67,7 @@ const STATIC_CABINET_BOUNDARIES = [
     },
     {
         id: 'lettuce-cabinet',
-        top: 280,
+        top: 320,
         left: 190,
         bottom: 400,
         right: 285,
@@ -62,7 +75,7 @@ const STATIC_CABINET_BOUNDARIES = [
     },
     {
         id: 'cheese-cabinet',
-        top: 280,
+        top: 320,
         left: 460,
         bottom: 400,
         right: 570,
@@ -70,7 +83,7 @@ const STATIC_CABINET_BOUNDARIES = [
     },
     {
         id: 'chicken-cabinet',
-        top: 280,
+        top: 320,
         left: 630,
         bottom: 400,
         right: 730,
@@ -79,8 +92,8 @@ const STATIC_CABINET_BOUNDARIES = [
 
     {
         id: 'cashier-counter',
-        top: 410,
-        left: 200,
+        top: 420,
+        left: 190,
         bottom: 580,
         right: 600,
     }
@@ -161,10 +174,10 @@ function getTrashBinBoundingBox() {
 }
 
 function collectIngredient(ingredientName) {
-    if (playerBag.length < MAX_ITEMS) {
+    if (player1Bag.length < MAX_ITEMS) {
         // Add the new ingredient to the END of the array (Enqueue)
         console.log("add ", ingredientName);
-        playerBag.push(ingredientName);
+        player1Bag.push(ingredientName);
         return true;
     } else {
         return false;
@@ -172,9 +185,9 @@ function collectIngredient(ingredientName) {
 }
 
 function discardIngredient() {
-    if (playerBag.length > 0) {
+    if (player1Bag.length > 0) {
         // Remove the oldest ingredient from the FRONT of the array (Dequeue)
-        const thrownItem = playerBag.shift(); 
+        const thrownItem = player1Bag.shift(); 
         console.log("remove ", thrownItem);
         return thrownItem;
     } else {
@@ -185,31 +198,41 @@ function discardIngredient() {
 // NOTE: Assuming INGREDIENT_SVG_PATHS and playerBag are defined globally.
 
 function renderPlayerBag() {
-    const gContainer = document.getElementById("held-food-group1");
 
-    // Clear the container
-    gContainer.innerHTML = '';
+    for (const bagData of Bags) { 
+        
+        // The original check is now removed/unnecessary if you want to render all bags.
+        // If you ONLY wanted to render the bag with id 'player1-bag', you'd use:
+        if (bagData.id !== 'player1-bag') { continue; } 
 
-    // 1. Generate the HTML for the ingredient images
-    const imagesHtml = playerBag.map(ingredient => {
-        const src = INGREDIENT_SVG_PATHS[ingredient]; 
-        // Use a more compact string structure
-        return `<img src="${src}" alt="${ingredient} icon" class="bag-item">`;
-    }).join('');
-    
-    // 2. Wrap the image HTML in the necessary SVG/HTML structure as a single string
-    // This avoids creating foreignObject and htmlDiv objects programmatically, 
-    // letting the browser parse the structure from the string.
-    const fullHtml = `
-        <foreignObject width="440" height="150">
-            <div style="display: flex; align-items: center; gap: 13px; height: 100%; width: 100%'; flex-wrap: wrap;">
-                ${imagesHtml}
-            </div>
-        </foreignObject>
-    `;
-    
-    // 3. Insert the full structure into the SVG group
-    gContainer.innerHTML = fullHtml;
+        const gContainer = document.getElementById(bagData.bagId);
+        
+        if (!gContainer) {
+            console.warn(`SVG container not found for bagId: ${bagData.bagId}`);
+            continue; 
+        }
+
+        // Clear the container
+        gContainer.innerHTML = '';
+
+        // 1. Generate the HTML for the ingredient images
+        const imagesHtml = bagData.bag.map(ingredient => {
+            const src = INGREDIENT_SVG_PATHS[ingredient]; 
+            return `<img src="${src}" alt="${ingredient} icon" class="bag-item">`;
+        }).join('');
+        
+        // 2. Construct the full foreignObject structure
+        const fullHtml = `
+            <foreignObject width="440" height="150">
+                <div style="display: flex; align-items: center; gap: 13px; height: 100%; width: 100%; flex-wrap: wrap;">
+                    ${imagesHtml}
+                </div>
+            </foreignObject>
+        `;
+        
+        // 3. Insert the full structure into the SVG group
+        gContainer.innerHTML = fullHtml;
+    }
 }
 
 function BoundingBoxOverlap(playerBox, cabinetId) {

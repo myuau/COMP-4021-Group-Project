@@ -70,7 +70,7 @@ body, html {
     height: 20%;
     /* Move cabinet here */
     top: 5%;
-    left: 5%;
+    left: 10%;
 }
 #bread-cabinet {
     z-index: 10;
@@ -79,7 +79,7 @@ body, html {
     height: 20%;
     /* Move cabinet here */
     top: 5%;
-    left: 25%;
+    left: 30%;
 }
 #coke-cabinet {
     z-index: 10;
@@ -88,7 +88,7 @@ body, html {
     height: 20%;
     /* Move cabinet here */
     top: 5%;
-    left: 45%;
+    left: 50%;
 }
 #fish-cabinet {
     z-index: 10;
@@ -97,7 +97,7 @@ body, html {
     height: 20%;
     /* Move cabinet here */
     top: 5%;
-    left: 65%;
+    left: 70%;
 }
 #trash-bin {
     position: absolute;
@@ -105,7 +105,7 @@ body, html {
     height: 20%;
     /* Move bin here */
     /* Move cabinet here */
-    top: 5%;
+    top: 12%;
     left: 85%;
 }
 
@@ -128,7 +128,7 @@ body, html {
     width: 20%; 
     height: 20%;
     /* Move cabinet here */
-    top: 40%;
+    top: 45%;
     left: 0%;
 }
 #lettuce-cabinet {
@@ -137,7 +137,7 @@ body, html {
     width: 20%; 
     height: 20%;
     /* Move cabinet here */
-    top: 40%;
+    top: 45%;
     left: 20%;
 }
 #cheese-cabinet {
@@ -146,7 +146,7 @@ body, html {
     width: 20%; 
     height: 20%;
     /* Move cabinet here */
-    top: 40%;
+    top: 45%;
     left: 55%;
 }
 #chicken-cabinet {
@@ -155,7 +155,7 @@ body, html {
     width: 20%; 
     height: 20%;
     /* Move cabinet here */
-    top: 40%;
+    top: 45%;
     left: 75%;
 }
 
@@ -187,7 +187,7 @@ body, html {
     stroke-width: 0.1vw;
 }
 
-#balance-container {
+#balance-container1{
     z-index: 10;
     position: absolute;
     height: 10vh;
@@ -195,7 +195,23 @@ body, html {
     top: 5vh;
 }
 
-#balance-container text {
+#balance-container2 {
+    z-index: 10;
+    position: absolute;
+    height: 10vh;
+    width: 25vw;
+    top: 5vh;
+
+    left: 84%;
+}
+
+#balance-container1 text{
+    font-size: 5vh;
+    fill: green;
+    stroke: black;
+    stroke-width: 0.05vw;
+}
+#balance-container2 text{
     font-size: 5vh;
     fill: green;
     stroke: black;
@@ -223,9 +239,10 @@ body, html {
     align-items: center;
 }
 .bag-item {
-    width: 23%;
+    width: 22%;
     height: 70%;
     object-fit: contain; 
+    translate: 0.5vw 0vh;
 }
 
 #table{
