@@ -101,7 +101,7 @@ const Player = function(ctx, x, y, gameArea) {
                 set = false;
             }
             for (const cabinetBox of STATIC_BOUNDARIES_AS_BOXES) {
-                if (cabinetBox.box.isPointInBox(x, y)) {
+                if (cabinetBox.id!="cashier-counter" && cabinetBox.box.isPointInBox(x, y)) {
                     set = false;
                 }
             }

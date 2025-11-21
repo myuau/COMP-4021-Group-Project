@@ -39,16 +39,19 @@ const Socket = (function() {
         // receive the order list of the opponent
         socket.on("opponent orders", ({orders}) => {
             // update the order list of the opponent in UI
+            OrderList2 = orders;
         })
 
         // receive the items that the opponent holds
         socket.on("opponent items", ({items}) => {
             // update the opponent's bag in UI
+            player2Bag = items;
         })
 
         // receive the scores of the opponent
         socket.on("opponent score", ({score}) => {
             // update the score of the opponent in UI
+            $("balance2").text(score);
         })
 
         // receive if the opponent speedup
