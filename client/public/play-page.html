@@ -2665,6 +2665,7 @@
   <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="scripts/socket.js"></script>
+  <script src="scripts/constant.js"></script>
   <script src="scripts/authentication.js"></script>
   <script src="scripts/bounding_box.js"></script>
   <script src="scripts/sprite.js"></script>
@@ -2676,17 +2677,12 @@
   <script src="scripts/ui.js"></script>
   <script>
     // uncomment this part when finish development
-    // $(function(){
-    //   authentication.validate(() => {
-    //     // initialize and run the game here
-    //   },
-    //   () => {
-    //     // if the player has not logged in, return to the start page
-    //     location.replace("/");
-    //   } 
-    // )
-    // })
-    RankingPage.initialize();
+    $(function(){
+      Authentication.validate(() => {
+        // initialize and run the game here
+        // console.log(Authentication.getUser())
+
+        RankingPage.initialize();
     RankingPage.hide();
     const totalGameTime = 150;
     let gameStartTime = 0;
@@ -2860,6 +2856,15 @@
       checkEmptyList();
       gameIntervalId = requestAnimationFrame(gameTick);
     });
+
+      },
+      () => {
+        // if the player has not logged in, return to the start page
+        location.replace("/");
+      } 
+    )
+    })
+
   </script>
 
 </body>
