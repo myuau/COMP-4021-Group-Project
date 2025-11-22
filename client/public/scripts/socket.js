@@ -17,9 +17,9 @@ const Socket = (function() {
         // params: 
         // startTime -- time when the game starts
         // duration -- duration of the game
-        // player -- info of the current user, format:
-        //          {username, userId, }
-        socket.on("game start", ({startTime, duration, player, opponent}) => {
+        // player1/ player2 -- info of the current user/ opponent respectively, format:
+        //          {username, userId}
+        socket.on("game start", ({startTime, duration, player1, player2}) => {
             // setup the timer in UI
             // initialize the player and other objects
         });
