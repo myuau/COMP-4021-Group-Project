@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Busy McDonald</title>
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <link rel="stylesheet" href="assets/player-page.css">
   <link rel="stylesheet" href="assets/index.css">
 </head>
@@ -2662,8 +2664,6 @@
       <button class="submit-btn" id="new-game">Start New Game</button>
   </section>
 
-  <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="scripts/socket.js"></script>
   <script src="scripts/constant.js"></script>
   <script src="scripts/authentication.js"></script>
@@ -2680,7 +2680,8 @@
     $(function(){
       Authentication.validate(() => {
         // initialize and run the game here
-        // console.log(Authentication.getUser())
+        Socket.connect();
+        Socket.getOpponent()
 
         RankingPage.initialize();
     RankingPage.hide();

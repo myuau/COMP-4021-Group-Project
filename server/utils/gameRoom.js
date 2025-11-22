@@ -1,13 +1,17 @@
 const gameRoom = function(groupId, player1, player2, io){
     const players = {
         [player1.id]: {
-            id: player1.id,
-            socket: player1,
+            id: player1.id, // socket id
+            username: player1.request.session.user.username, // username
+            userId: player1.request.session.user.userId, // userId
+            socket: player1, // player's socket
             score: 0,
             ready: false
         },
         [player2.id]: {
             id: player2.id,
+            username: player2.request.session.user.username,
+            userId: player2.request.session.user.userId,
             socket: player2,
             score: 0,
             ready: false
@@ -78,7 +82,15 @@ const gameRoom = function(groupId, player1, player2, io){
             console.log(`Room ${groupId} game start`);
             io.to(groupId).emit("game start", {
                 startTime: gameStatus.startTime,
-                duration: gameStatus.duration
+                duration: gameStatus.duration,
+                player1: {
+                    username: player1.username,
+                    userId: player1.userId
+                },
+                player2: {
+                    username: player2.username,
+                    userId: player2.userId
+                }
             });
             
             startGameTimer();
@@ -204,6 +216,14 @@ const gameRoom = function(groupId, player1, player2, io){
         });
     };
 
+    const getOpponent = function(playerId){
+        const info = {
+            username: playerId === player1.id ? player1.username : player2.username,
+            userId: playerId === player1.id ? player1.userId : player2.userId,
+        }
+        broadcastToOther(playerId, "opponent info", info);
+    }
+
     const getStatus = function() {
         return {
             groupId: groupId,
@@ -226,6 +246,8 @@ const gameRoom = function(groupId, player1, player2, io){
         handleOrders,
         handleScore,
         handleEndGame,
+        handlePlayerTrap,
+        getOpponent,
         cleanup,
         getStatus
     };

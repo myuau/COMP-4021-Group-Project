@@ -17,10 +17,19 @@ const Socket = (function() {
         // params: 
         // startTime -- time when the game starts
         // duration -- duration of the game
-        socket.on("game start", ({startTime, duration}) => {
+        // player -- info of the current user, format:
+        //          {username, userId, }
+        socket.on("game start", ({startTime, duration, player, opponent}) => {
             // setup the timer in UI
             // initialize the player and other objects
         });
+
+        // get the opponent info
+        // username, userId
+        socket.on("opponent info", ({username, userId}) => {
+            // write code inside if you need this endpoint
+            console.log(username, userId);
+        })
 
         // synchronize the remaining time of the game with both players
         // so as to avoid the effect of transmission delay
@@ -76,7 +85,10 @@ const Socket = (function() {
         })
 
         // get group information after pairup
-        // groupId, players()
+        // groupId -- id of the group
+        // players -- info of the players in the pair, format:
+        // {username, userId}
+        // yourRole -- '1' - current player, '2' - opponent
         socket.on("match success", ({groupId, players, yourRole}) => {
             groupId = groupId;
             PairupPage.showMatched();
@@ -150,6 +162,10 @@ const Socket = (function() {
         })
     }
 
+    const getOpponent = function(){
+        socket.emit("opponent info");
+    }
+
     const endGame = function() {
         socket.emit("end game", {groupId: groupId});
     }
@@ -163,6 +179,8 @@ const Socket = (function() {
         sendGameField,
         playerReady,
         playerMove,
+        playerSpeedup,
+        getOpponent,
         updatePlayerBag,
         updateOrders,
         updateScore,

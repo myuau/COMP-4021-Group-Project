@@ -142,6 +142,26 @@ app.get("/validate", (req, res) => {
     }
 });
 
+app.get("/user/:userId", (req, res) => {
+    let userData = fs.readFileSync("data/users.json", {encoding: "utf-8"});
+    let users = JSON.parse(userData);
+
+    let target = Object.keys(users).filter(ele => ele === req.param.userId);
+
+    if(target){
+        return res.json({
+            status: "success",
+            data: users[target]
+        });
+    }
+    else{
+        return res.json({
+            status: "error",
+            error: "The required user is not found."
+        })
+    }
+})
+
 app.get("/signout", (req, res) => {
     req.session.user = null;
 
@@ -191,7 +211,7 @@ io.on("connection", (socket) => {
     socket.on("trap", () => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if(gameRoom){
-            gameRoom.handlePlayerSpeedup(socket.id);
+            gameRoom.handlePlayerTrap(socket.id);
         }
     })
 
@@ -222,6 +242,13 @@ io.on("connection", (socket) => {
             gameRoom.getGameField(data.boundingBox);
         }
     });
+
+    socket.on("opponent info", () => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if (gameRoom) {
+            gameRoom.getOpponent(socket.id);
+        }
+    })
 
     socket.on("disconnect", () => {
         matchPool.handleDisconnect(socket);
