@@ -130,7 +130,6 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handlePlayerMove = function(playerId, isMoved, dir){
-        console.log("player ", playerId, isMoved, dir);
         broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, dir: dir });
     };
 
