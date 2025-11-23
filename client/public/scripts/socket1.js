@@ -6,37 +6,12 @@ const Socket = (function() {
         return socket;
     };
 
-    let player = null;
-    let opponent = null;
-    let playerAttribute = null;
-    let opponentAttribute = null;
-    let banana = null;
-
-    const getPlayer = function(player) {
-        player = player;
-    }
-    const getOpponent = function(opp) {
-        opponent = opp;
-    }
-    const getPlayerAttribute = function(attr) {
-        playerAttribute = attr;
-    }
-    const getOpponentAttribute = function(attr) {
-        opponentAttribute = attr;
-    }
-    const getBanana = function(bananaObj) {
-        banana = bananaObj;
-    }
-
-    const getGroupId = function() {
-        return groupId;
-    }
-
     const connect = function() {
         socket = io(BASE_URL, {
             withCredentials: true,
             transports: ['websocket', 'polling']
         });
+
         socket.on("connect", () => {
             socket.emit("request match");
         });
@@ -45,10 +20,18 @@ const Socket = (function() {
         // params: 
         // startTime -- time when the game starts
         // duration -- duration of the game
-        socket.on("game start", ({startTime, duration}) => {
+        // player1/ player2 -- info of the current user/ opponent respectively, format:
+        //          {username, userId}
+        socket.on("game start", ({startTime, duration, player1, player2}) => {
             // setup the timer in UI
             // initialize the player and other objects
         });
+
+        // get the opponent info
+        // username, userId
+        socket.on("opponent info", ({username, userId}) => {
+            // write code inside if you need this endpoint
+        })
 
         // synchronize the remaining time of the game with both players
         // so as to avoid the effect of transmission delay
@@ -57,63 +40,43 @@ const Socket = (function() {
         // elapsedTime -- amount of time that was used up
         socket.on("sync time", ({remainingTime, elapsedTime}) => {
             // update the timer in UI
-            const timer = document.getElementById("time-remaining");
-            timeRemaining = Math.ceil(remainingTime / 1000);
-            gameTimeSoFar = Math.floor(elapsedTime / 1000);
-            timer.textContent = timeRemaining;
-            console.log("time remaining: ", timeRemaining);
         });
 
         // receive the movement of the opponent
         socket.on("opponent move", ({isMoved, dir}) => {
             // update the opponent player in UI
-            if (isMoved) {
-                opponent.move(dir);
-            } else {
-                opponent.stop(dir);
-            }
         });
 
         // receive the order list of the opponent
         socket.on("opponent orders", ({orders}) => {
             // update the order list of the opponent in UI
-            lists.find(item => item.name === "opponent").list = orders;
         })
 
         // receive the items that the opponent holds
         socket.on("opponent items", ({items}) => {
             // update the opponent's bag in UI
-            Bags.find(bag => bag.bagId === opponentAttribute.bagId).bag = items;
         })
 
         // receive the scores of the opponent
         socket.on("opponent score", ({score}) => {
             // update the score of the opponent in UI
-            const opponentCash = document.getElementById(opponentAttribute.balanceId);
-            opponentCash.textContent = score;
+            console.log("opponent score", score);
         })
 
         // receive if the opponent speedup
         socket.on("opponent speedup", ({speedup})=>{
             // update when the opponent speedup
-            if (speedup) {
-                opponent.speedUp();
-            } else {
-                opponent.slowDown();
-            }
         })
 
         // get the position of the obstacle
         // position: {x, y}
         socket.on("update obstacle", ({position}) => {
             // update the position of the obstacle
-            banana.setXY(position.x, position.y);
         });
 
         // receive if the opponent is trapped by the obstacle
         socket.on("opponent trap", () => {
             // update the opponent animation
-            // add trap audio effect
         })
 
         // get the final score
@@ -121,12 +84,13 @@ const Socket = (function() {
         // {id, score, rank}
         socket.on("final score", ({ranking}) => {
             // hide game area, show ranking page
-            const gameArea = document.getElementById("#game-container");
-            gameArea.display = "none";
         })
 
         // get group information after pairup
-        // groupId, players()
+        // groupId -- id of the group
+        // players -- info of the players in the pair, format:
+        // {username, userId}
+        // yourRole -- '1' - current player, '2' - opponent
         socket.on("match success", ({groupId, players, yourRole}) => {
             groupId = groupId;
             PairupPage.showMatched();
@@ -200,6 +164,10 @@ const Socket = (function() {
         })
     }
 
+    const getOpponent = function(){
+        socket.emit("opponent info");
+    }
+
     const endGame = function() {
         socket.emit("end game", {groupId: groupId});
     }
@@ -209,14 +177,12 @@ const Socket = (function() {
         socket = null;
     };
 
-    const PlayerTrap = function(){
-        socket.emit("trap"); 
-    }
-
     return { 
         sendGameField,
         playerReady,
         playerMove,
+        playerSpeedup,
+        getOpponent,
         updatePlayerBag,
         updateOrders,
         updateScore,
@@ -224,14 +190,6 @@ const Socket = (function() {
         connect, 
         disconnect, 
         cancelMatch, 
-        endGame,
-        playerSpeedup,
-        PlayerTrap,
-        getPlayer,
-        getOpponent,
-        getGroupId,
-        getPlayerAttribute,
-        getOpponentAttribute,
-        getBanana
+        endGame 
     };
 })();

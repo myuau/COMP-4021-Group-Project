@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Busy McDonald</title>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <link rel="stylesheet" href="assets/player-page.css">
     <link rel="stylesheet" href="assets/index.css">
 </head>
@@ -3030,8 +3032,6 @@
         <button class="submit-btn" id="new-game">Start New Game</button>
     </section>
 
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script src="scripts/socket.js"></script>
     <script src="scripts/authentication.js"></script>
     <script src="scripts/bounding_box.js"></script>
@@ -3051,6 +3051,17 @@
                     // initialize and run the game here
                     Socket.connect();
                     const socket = Socket.getSocket();
+
+
+                    setTimeout(()=>{
+                        Socket.playerReady();
+                        Socket.sendGameField({
+                            top: 60,
+                            bottom: 400,
+                            left: 40,
+                            right: 700
+                        })   
+                    }, 2000);
 
                     RankingPage.initialize();
                     RankingPage.hide();
@@ -3110,15 +3121,18 @@
                         }
 
                         /* Update the time remaining */
-                        const gameTimeSoFar = now - gameStartTime;
-                        const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
-                        $("#time-remaining").text(timeRemaining);
+                        let gameTimeSoFar = now - gameStartTime;
+                        let timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+                        // $("#time-remaining").text(timeRemaining);
 
                         if (timeRemaining <= 0) {
                             // Time's up! Handle end of game logic here
                             endGameTick(gameIntervalId);
                             sounds.background.pause();
-                            sounds.collect.pause();
+                            sounds.complete.pause();
+                            console.log("Game over!");
+                            $('#game-container').hide();
+                            RankingPage.show();
                             return;
                         }
 
@@ -3143,9 +3157,9 @@
 
                         if (overlap(playerBbox, bananaBbox)) {
                             Socket.PlayerTrap();
-                            if (player1Bag.length > 0) {
-                                player1Bag.shift();	// remove one item
-                                Socket.updatePlayerBag(player1Bag);
+                            if (playerAttribute.bag.length > 0) {
+                                playerAttribute.bag.shift();	// remove one item
+                                Socket.updatePlayerBag(playerAttribute.bag);
                             } else {
                                 balance -= 5; // Penalty of $5
                                 const playerCash = document.getElementById(playerAttribute.balanceId);
@@ -3224,6 +3238,7 @@
                         opponentAttribute = playerAttributes.find(attr => attr.name === 'opponent');
                         Socket.getPlayerAttribute(playerAttribute);
                         Socket.getOpponentAttribute(opponentAttribute);
+                        Socket.getBanana(banana);
 
                         // Banana penalty check
                         setInterval(checkBanana, 500);
