@@ -9,30 +9,39 @@ const fs = require("fs");
 
 const app = express();
 const httpServer = createServer(app);
+
+const gameSession = session({
+    secret: "game",
+    resave: true,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: { 
+        maxAge: 300000,
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax'
+    }
+});
+app.use(gameSession);
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+}));
+
+app.use(express.json());
+
 const io = new Server(httpServer, {
     cors: {
         origin: "http://localhost:3000",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 
 const matchPool = require('./utils/matchPool.js')(io); 
-
-app.use(express.json());
-
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
-}));
-
-const gameSession = session({
-    secret: "game",
-    resave: false,
-    saveUninitialized: false,
-    rolling: true,
-    cookie: { maxAge: 300000 }
-});
-app.use(gameSession);
 
 function containWordCharsOnly(text) {
     return /^\w+$/.test(text);
@@ -111,9 +120,21 @@ app.post("/login", (req, res) => {
 
             req.session.user = account;
 
-            return res.json({ 
-                status: "success",
-                user: account
+            req.session.save((err) => {
+                if (err) {
+                    return res.json({
+                        status: "error",
+                        error: "Fail to login, please try again"
+                    });
+                }
+                
+                console.log('Login successfully, user:', account);
+                console.log('Session ID:', req.sessionID);
+
+                return res.json({ 
+                    status: "success",
+                    user: account
+                });
             });
         }
         else{
@@ -142,6 +163,26 @@ app.get("/validate", (req, res) => {
     }
 });
 
+app.get("/user/:userId", (req, res) => {
+    let userData = fs.readFileSync("data/users.json", {encoding: "utf-8"});
+    let users = JSON.parse(userData);
+
+    let target = Object.keys(users).filter(ele => ele === req.param.userId);
+
+    if(target){
+        return res.json({
+            status: "success",
+            data: users[target]
+        });
+    }
+    else{
+        return res.json({
+            status: "error",
+            error: "The required user is not found."
+        })
+    }
+})
+
 app.get("/signout", (req, res) => {
     req.session.user = null;
 
@@ -155,6 +196,15 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
+    console.log('socket info:', {
+        socketId: socket.id,
+        hasSession: !!socket.request.session,
+        sessionID: socket.request.sessionID,
+        user: socket.request.session?.user
+    });
+    if(!socket.request.session.user || !socket.request.session){
+        console.error("no session...");
+    }
     socket.on("request match", () => {
         matchPool.handleMatchRequest(socket);
     });
@@ -191,7 +241,7 @@ io.on("connection", (socket) => {
     socket.on("trap", () => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if(gameRoom){
-            gameRoom.handlePlayerSpeedup(socket.id);
+            gameRoom.handlePlayerTrap(socket.id);
         }
     })
 
@@ -219,32 +269,19 @@ io.on("connection", (socket) => {
     socket.on("game field", (data) => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if (gameRoom) {
-            gameRoom.getGameField(data.boundingBox);
+            gameRoom.getGameField(data);
         }
     });
+
+    socket.on("opponent info", () => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if (gameRoom) {
+            gameRoom.getOpponent(socket.id);
+        }
+    })
 
     socket.on("disconnect", () => {
         matchPool.handleDisconnect(socket);
-    });
-
-    // Additional
-    socket.on("update DataBase", (data) => {
-        const dataBase = JSON.parse(fs.readFileSync("data/userData.json", "utf-8"));
-        const playerIndex = dataBase.findIndex(item => item.id === data.id);
-        dataBase[playerIndex] = {
-            "id": data.id,
-            "bagItems": data.bag,
-            "orderList": data.orders,
-            "cash": data.score
-        }
-        fs.writeFileSync("data/userData.json", JSON.stringify(dataBase, null, 2));
-        io.emit("gameData", dataBase);
-    });
-    socket.on("get Ids", () => {
-        const users = JSON.parse(fs.readFileSync("data/users.json", "utf-8"));
-        socket.emit("Ids", {
-            // Find the userId based on the session user
-        });
     });
 });
 

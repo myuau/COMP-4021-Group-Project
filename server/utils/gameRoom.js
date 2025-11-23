@@ -1,13 +1,23 @@
 const gameRoom = function(groupId, player1, player2, io){
+    if(!player1.request.session.user || !player2.request.session.user){
+        console.error("Session is not defined!");
+        return;
+    }
+    console.log(player1.request.session.user);
+
     const players = {
         [player1.id]: {
-            id: player1.id,
-            socket: player1,
+            id: player1.id, // socket id
+            username: player1.request.session.user.username, // username
+            userId: player1.request.session.user.userId, // userId
+            socket: player1, // player's socket
             score: 0,
             ready: false
         },
         [player2.id]: {
             id: player2.id,
+            username: player2.request.session.user.username,
+            userId: player2.request.session.user.userId,
             socket: player2,
             score: 0,
             ready: false
@@ -23,7 +33,7 @@ const gameRoom = function(groupId, player1, player2, io){
     
     let gameStatus = {
         status: "waiting",
-        duration: 180000,
+        duration: 20000,
         startTime: null,
         endTime: null,
         timer: null,
@@ -78,7 +88,15 @@ const gameRoom = function(groupId, player1, player2, io){
             console.log(`Room ${groupId} game start`);
             io.to(groupId).emit("game start", {
                 startTime: gameStatus.startTime,
-                duration: gameStatus.duration
+                duration: gameStatus.duration,
+                player1: {
+                    username: player1.username,
+                    userId: player1.userId
+                },
+                player2: {
+                    username: player2.username,
+                    userId: player2.userId
+                }
             });
             
             startGameTimer();
@@ -92,7 +110,7 @@ const gameRoom = function(groupId, player1, player2, io){
 
         gameStatus.syncTimer = setInterval(() => {
             syncRemainingTime();
-        }, 5000);
+        }, 1000);
 
         obstacleTimer = setInterval(() => {
             handleObstacle();
@@ -112,6 +130,7 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handlePlayerMove = function(playerId, isMoved, dir){
+        console.log("player ", playerId, isMoved, dir);
         broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, dir: dir });
     };
 
@@ -139,6 +158,7 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handleScore = function(playerId, score){
+        console.log("player score", playerId, score);
         if (players[playerId]) {
             players[playerId].score = score;
             broadcastToOther(playerId, "opponent score", {
@@ -204,6 +224,15 @@ const gameRoom = function(groupId, player1, player2, io){
         });
     };
 
+    const getOpponent = function(playerId){
+        const opponent = Object.keys(players).filter(ele => ele !== playerId);
+        const info = {
+            username: players[opponent[0]].username,
+            userId: players[opponent[0]].userId
+        }
+        broadcastToOther(playerId, "opponent info", info);
+    }
+
     const getStatus = function() {
         return {
             groupId: groupId,
@@ -226,6 +255,8 @@ const gameRoom = function(groupId, player1, player2, io){
         handleOrders,
         handleScore,
         handleEndGame,
+        handlePlayerTrap,
+        getOpponent,
         cleanup,
         getStatus
     };
