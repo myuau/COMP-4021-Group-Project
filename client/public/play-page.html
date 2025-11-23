@@ -2681,8 +2681,14 @@
       Authentication.validate(() => {
         // initialize and run the game here
         Socket.connect();
-        setInterval(()=>{
-          Socket.getOpponent();
+        setTimeout(()=>{
+          Socket.playerReady();
+          Socket.sendGameField({
+            top: 60,
+            bottom: 400,
+            left: 40,
+            right: 700
+        })
         }, 2000);
 
         RankingPage.initialize();

@@ -72,7 +72,6 @@ const Socket = (function() {
         // position: {x, y}
         socket.on("update obstacle", ({position}) => {
             // update the position of the obstacle
-
         });
 
         // receive if the opponent is trapped by the obstacle
@@ -128,7 +127,6 @@ const Socket = (function() {
     // - `3` - moving to the right
     // - `4` - moving down
     const playerMove = function(isMoved, dir){
-        console.log("player move ", isMoved, dir);
         socket.emit("move", {
             isMoved: isMoved,
             dir: dir
@@ -153,7 +151,6 @@ const Socket = (function() {
 
     // update the score of the player to the server
     const updateScore = function(score){
-        console.log("player score", score);
         socket.emit("update score", {
             score: score
         })
