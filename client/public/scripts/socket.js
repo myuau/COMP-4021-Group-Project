@@ -6,9 +6,30 @@ const Socket = (function() {
         return socket;
     };
 
+    let player = null;
+    let opponent = null;
+    let playerAttribute = null;
+    let opponentAttribute = null;
+
+    const getPlayer = function(player) {
+        player = player;
+    }
+    const getOpponent = function(opp) {
+        opponent = opp;
+    }
+    const getPlayerAttribute = function(attr) {
+        playerAttribute = attr;
+    }
+    const getOpponentAttribute = function(attr) {
+        opponentAttribute = attr;
+    }
+
+    const getGroupId = function() {
+        return groupId;
+    }
+
     const connect = function() {
         socket = io(BASE_URL);
-
         socket.on("connect", () => {
             socket.emit("request match");
         });
@@ -34,41 +55,54 @@ const Socket = (function() {
         // receive the movement of the opponent
         socket.on("opponent move", ({isMoved, dir}) => {
             // update the opponent player in UI
+            if (isMoved) {
+                opponent.move(dir);
+            } else {
+                opponent.stop(dir);
+            }
         });
 
         // receive the order list of the opponent
         socket.on("opponent orders", ({orders}) => {
             // update the order list of the opponent in UI
-            OrderList2 = orders;
+            lists.find(item => item.name === "opponent").list = orders;
         })
 
         // receive the items that the opponent holds
         socket.on("opponent items", ({items}) => {
             // update the opponent's bag in UI
-            player2Bag = items;
+            Bags.find(bag => bag.bagId === opponentAttribute.bagId).bag = items;
         })
 
         // receive the scores of the opponent
         socket.on("opponent score", ({score}) => {
             // update the score of the opponent in UI
-            $("balance2").text(score);
+            const opponentCash = document.getElementById(opponentAttribute.balanceId);
+            opponentCash.textContent = score;
         })
 
         // receive if the opponent speedup
         socket.on("opponent speedup", ({speedup})=>{
             // update when the opponent speedup
+            if (speedup) {
+                opponent.speedUp();
+            } else {
+                opponent.slowDown();
+            }
         })
 
         // get the position of the obstacle
         // position: {x, y}
         socket.on("update obstacle", ({position}) => {
             // update the position of the obstacle
-
+            console.log("obstacle position:", position);
+            banana.setXY(position.x, position.y);
         });
 
         // receive if the opponent is trapped by the obstacle
         socket.on("opponent trap", () => {
             // update the opponent animation
+            // add trap audio effect
         })
 
         // get the final score
@@ -162,6 +196,10 @@ const Socket = (function() {
         socket = null;
     };
 
+    const PlayerTrap = function(){
+        socket.emit("trap"); 
+    }
+
     return { 
         sendGameField,
         playerReady,
@@ -173,6 +211,13 @@ const Socket = (function() {
         connect, 
         disconnect, 
         cancelMatch, 
-        endGame 
+        endGame,
+        playerSpeedup,
+        PlayerTrap,
+        getPlayer,
+        getOpponent,
+        getGroupId,
+        getPlayerAttribute,
+        getOpponentAttribute
     };
 })();

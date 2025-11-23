@@ -1,18 +1,24 @@
 let player1Bag = [];
 let player2Bag = [];
+let Bags = [];
 const MAX_ITEMS = 4;
-const Bags = [
-    {
-        id: 'player1-bag',
-        bagId: "held-food-group1",
-        bag: player1Bag
-    },
-    {
-        id: 'player2-bag',
-        bagId: "held-food-group1",
-        bag: player2Bag
-    }
-];
+let PlayerObject = null;
+let OpponentObject = null;
+
+function updateBags(playerAttributes) {
+    PlayerObject = playerAttributes.find(attr => attr.name === 'player');
+    OpponentObject = playerAttributes.find(attr => attr.name === 'opponent');
+    Bags = [
+        {
+            bagId: PlayerObject.bagId,
+            bag: PlayerObject.bag
+        },
+        {
+            bagId: OpponentObject.bagId,
+            bag: OpponentObject.bag
+        }
+    ];
+}
 
 const STATIC_CABINET_BOUNDARIES = [
     {
@@ -174,10 +180,11 @@ function getTrashBinBoundingBox() {
 }
 
 function collectIngredient(ingredientName) {
-    if (player1Bag.length < MAX_ITEMS) {
+    if (PlayerObject.bag.length < MAX_ITEMS) {
         // Add the new ingredient to the END of the array (Enqueue)
-        console.log("add ", ingredientName);
-        player1Bag.push(ingredientName);
+        console.log("add ", ingredientName)
+        PlayerObject.bag.push(ingredientName);
+        Socket.updatePlayerBag(PlayerObject.bag);
         return true;
     } else {
         return false;
@@ -185,10 +192,11 @@ function collectIngredient(ingredientName) {
 }
 
 function discardIngredient() {
-    if (player1Bag.length > 0) {
+    if (PlayerObject.bag.length > 0) {
         // Remove the oldest ingredient from the FRONT of the array (Dequeue)
-        const thrownItem = player1Bag.shift(); 
+        const thrownItem = PlayerObject.bag.shift(); 
         console.log("remove ", thrownItem);
+        Socket.updatePlayerBag(PlayerObject.bag);
         return thrownItem;
     } else {
         return null;
@@ -203,7 +211,7 @@ function renderPlayerBag() {
         
         // The original check is now removed/unnecessary if you want to render all bags.
         // If you ONLY wanted to render the bag with id 'player1-bag', you'd use:
-        if (bagData.id !== 'player1-bag') { continue; } 
+        // if (bagData.id !== 'player1-bag') { continue; } 
 
         const gContainer = document.getElementById(bagData.bagId);
         

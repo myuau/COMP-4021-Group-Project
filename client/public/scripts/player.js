@@ -4,7 +4,7 @@
 // - `y` - The initial y position of the player
 // - `gameArea` - The bounding box of the game area
 const Player = function(ctx, x, y, gameArea) {
-
+    let STATIC_BOUNDARIES_AS_BOXES = null;
     // This is the sprite sequences of the player facing different directions.
     // It contains the idling sprite sequences `idleLeft`, `idleUp`, `idleRight` and `idleDown`,
     // and the moving sprite sequences `moveLeft`, `moveUp`, `moveRight` and `moveDown`.
@@ -25,11 +25,6 @@ const Player = function(ctx, x, y, gameArea) {
     // This is the sprite object of the player created from the Sprite module.
     const sprite = Sprite(ctx, x, y);
 
-    // The sprite object is configured for the player sprite here.
-    sprite.setSequence(sequences.idleDown)
-          .setScale(2)
-          .setShadowScale({ x: 0.75, y: 0.20 })
-          .useSheet("assets/img/sprite-sheet-blue.png");
 
     // This is the moving direction, which can be a number from 0 to 4:
     // - `0` - not moving
@@ -114,6 +109,21 @@ const Player = function(ctx, x, y, gameArea) {
         sprite.update(time);
     };
 
+    function setSpriteSheet(src) {
+        sprite.setSequence(sequences.idleDown)
+        .setScale(2)
+        .setShadowScale({ x: 0.75, y: 0.20 })
+        .useSheet(src);
+    }
+
+    function setXY(x, y) {
+        sprite.setXY(x, y);
+    }
+
+    function setBoxes(boxes) {
+        STATIC_BOUNDARIES_AS_BOXES = boxes;
+    }
+
     // The methods are returned as an object here.
     return {
         move: move,
@@ -122,6 +132,9 @@ const Player = function(ctx, x, y, gameArea) {
         slowDown: slowDown,
         getBoundingBox: sprite.getBoundingBox,
         draw: sprite.draw,
-        update: update
+        update: update,
+        setSpriteSheet: setSpriteSheet,
+        setBoxes: setBoxes,
+        setXY: setXY
     };
 };

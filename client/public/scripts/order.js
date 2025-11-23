@@ -1,7 +1,9 @@
 const MAX_ORDERS = 3;
-const player1OrderElement = document.getElementById('order1-list');
-const player2OrderElement = document.getElementById('order2-list');
-
+let playerOrderElement = null;
+let opponentOrderElement = null;
+let lastGenerationTime = Date.now(); // Track time for the generator
+let playerAttribute = null;
+let opponentAttribute = null;
 // Order pool
 const ORDER_POOL = [
     { 
@@ -51,18 +53,26 @@ const ORDER_GENERATION_INTERVAL = 2500;
 
 let OrderList1 = [];
 let OrderList2 = [];
-const lists = [
-    {
-        id: 'player1',
-        list: OrderList1,
-        element: player1OrderElement
-    },
-    {
-        id: 'player2',
-        list: OrderList2,
-        element: player2OrderElement
-    }
-];
+let lists = [];
+
+function updateOrderLists(playerAttributes) {
+    playerAttribute = playerAttributes.find(attr => attr.name === 'player');
+    opponentAttribute = playerAttributes.find(attr => attr.name === 'opponent');
+    playerOrderElement = document.getElementById(playerAttribute.orderlistElement);
+    opponentOrderElement = document.getElementById(opponentAttribute.orderlistElement);
+    lists = [
+        {
+            name: 'player',
+            list: playerAttribute.list,
+            element: playerOrderElement
+        },
+        {
+            name: 'opponent',
+            list: opponentAttribute.list,
+            element: opponentOrderElement
+        }
+    ];
+}
 
 function generateRandomOrder() {
     // 1. Randomly select one item from the pool
@@ -84,19 +94,20 @@ function generateRandomOrder() {
 }
 
 function addNewOrder() {
-    if(OrderList1.length < MAX_ORDERS) {
+    if(playerAttribute.list.length < MAX_ORDERS) {
         const newOrder = generateRandomOrder();
-        OrderList1.push(newOrder);
+        playerAttribute.list.push(newOrder);
+        Socket.updateOrders(playerAttribute.list);
     }
     renderOrders();
 }
 
 function completeOrder(orderType) {
     // 1. Find the index of the order with the given ID
-    const index = OrderList1.findIndex(order => order.type === orderType);
+    const index = playerAttribute.list.findIndex(order => order.type === orderType);
 
     if (index !== -1) {
-        const completedOrder = OrderList1.splice(index, 1); // Remove 1 item at 'index'
+        const completedOrder = playerAttribute.list.splice(index, 1); // Remove 1 item at 'index'
         console.log(`Order completed: ${completedOrder[0].type}.`);
         
         // 2. Rearrange the list (re-render)
@@ -114,11 +125,11 @@ function completeOrder(orderType) {
 }
 
 function renderOrders() {
-
+    for (const item of lists) {
+        item.element.innerHTML = '';
+    }
+    
     for(const item of lists) {
-        if(item.id === 'player1') {
-        item.element.innerHTML = ''; // Clear existing content
-
         item.list.forEach(order => {
             const listItem = document.createElement('li');
             listItem.classList.add('order-item');
@@ -160,13 +171,12 @@ function renderOrders() {
             // Append to the UL element
             item.element.appendChild(listItem);
         });
-        }
     }
 
 }
 
 function checkEmptyList() {
-    if (OrderList1.length === 0) {
+    if (playerAttribute.list.length === 0) {
         console.log("List empty! Generating a guaranteed order.");
         addNewOrder();
     }
@@ -178,11 +188,11 @@ function gameTick() {
 
     // --- 1. Check for Expired Orders ---
     // Iterate backwards to safely remove items
-    for (let i = OrderList1.length - 1; i >= 0; i--) {
-        const order = OrderList1[i];
+    for (let i = playerAttribute.list.length - 1; i >= 0; i--) {
+        const order = playerAttribute.list[i];
         
         if (currentTime >= order.finishTime) {
-            OrderList1.splice(i, 1); // Remove the expired order
+            playerAttribute.list.splice(i, 1); // Remove the expired order
             console.log(`Order failed (Time Up): ${order.type}.`);
             ordersChanged = true;
         }
@@ -192,7 +202,7 @@ function gameTick() {
     const timeSinceLast = currentTime - lastGenerationTime;
 
     if (timeSinceLast >= ORDER_GENERATION_INTERVAL) {
-        if (OrderList1.length < MAX_ORDERS) {
+        if (playerAttribute.list.length < MAX_ORDERS) {
             addNewOrder(); // This function now *only* adds an order
             ordersChanged = true;
         }
@@ -201,7 +211,7 @@ function gameTick() {
     }
     
     // --- 3. Check for Empty List (if something was removed) ---
-    if (ordersChanged && OrderList1.length === 0) {
+    if (ordersChanged && playerAttribute.list.length === 0) {
         // This check ensures that if the list was wiped by expirations,
         // we get one new order immediately.
         addNewOrder();
@@ -225,5 +235,6 @@ function removeOrderFromList(completeOrder, ordersList) {
     if (index !== -1) {
         ordersList.splice(index, 1);
         renderOrders();
+        Socket.updateOrders(playerAttribute.list);
     }
 }
