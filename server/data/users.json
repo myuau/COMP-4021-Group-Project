@@ -6,5 +6,13 @@
   "Tony": {
     "password": "$2b$10$9iA9E50YAC7VeKB1YtTt4eG5kxiiYZnN8cX70EK40KUkzQCdck5fC",
     "userId": "0"
+  },
+  "cherry": {
+    "password": "$2b$10$FUnrmNIJi8.M8/k2KhUb0eYDr.8w/i9YO7vJI2NsuDzjHy/8ngzSW",
+    "userId": "2"
+  },
+  "May": {
+    "password": "$2b$10$rMOkxfpuv9Six32pRj//neLQ7PpH7ExIO6ZDZRiiClIGn397VvUja",
+    "userId": "3"
   }
 }

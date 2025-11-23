@@ -121,7 +121,6 @@ const Socket = (function() {
         // {id, username, userId, score, rank}
         // isTie: boolean
         socket.on("final score", ({ranking, isTie}) => {
-            console.log(ranking, isTie);
             // hide game area, show ranking page
             RankingPage.setRanking(ranking, isTie);
             RankingPage.show();
@@ -205,7 +204,7 @@ const Socket = (function() {
         })
     }
 
-    const getOpponent = function(){
+    const requestOpponent = function(){
         socket.emit("opponent info");
     }
 
@@ -232,7 +231,7 @@ const Socket = (function() {
         playerMove,
         playerSpeedup,
         playerTrap,
-        getOpponent,
+        requestOpponent,
         updatePlayerBag,
         updateOrders,
         updateScore,
