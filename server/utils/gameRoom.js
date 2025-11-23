@@ -112,7 +112,7 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handlePlayerMove = function(playerId, isMoved, dir){
-        broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, direction: dir });
+        broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, dir: dir });
     };
 
     const handlePlayerSpeedup = function(playerId, speedup){
@@ -141,7 +141,7 @@ const gameRoom = function(groupId, player1, player2, io){
     const handleScore = function(playerId, score){
         if (players[playerId]) {
             players[playerId].score = score;
-            broadcastToOther(playerId, "update score", {
+            broadcastToOther(playerId, "opponent score", {
                 playerId: playerId,
                 score: score
             });

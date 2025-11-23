@@ -3030,35 +3030,34 @@
         <button class="submit-btn" id="new-game">Start New Game</button>
     </section>
 
-    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="scripts/socket.js"></script>
-    <script src="scripts/authentication.js"></script>
-    <script src="scripts/bounding_box.js"></script>
-    <script src="scripts/sprite.js"></script>
-    <script src="scripts/player.js"></script>
-    <script src="scripts/order.js"></script>
-    <script src="scripts/collect.js"></script>
-    <script src="scripts/complete.js"></script>
-    <script src="scripts/obstacle.js"></script>
-    <script src="scripts/ui.js"></script>
-    <script>
-        const BASE_URL = 'http://localhost:3000';
-        // uncomment this part when finish development
-        // $(function(){
-        //   authentication.validate(() => {
-        //     // initialize and run the game here
-        //   },
-        //   () => {
-        //     // if the player has not logged in, return to the start page
-        //     location.replace("/");
-        //   } 
-        // )
-        // })
-        RankingPage.initialize();
-        RankingPage.hide();
-        const totalGameTime = 150;
-        let gameStartTime = 0;
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="scripts/socket.js"></script>
+  <script src="scripts/authentication.js"></script>
+  <script src="scripts/bounding_box.js"></script>
+  <script src="scripts/sprite.js"></script>
+  <script src="scripts/player.js"></script>
+  <script src="scripts/order.js"></script>
+  <script src="scripts/collect.js"></script>
+  <script src="scripts/complete.js"></script>
+  <script src="scripts/obstacle.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script>
+    // uncomment this part when finish development
+    // $(function(){
+    //   authentication.validate(() => {
+    //     // initialize and run the game here
+    //   },
+    //   () => {
+    //     // if the player has not logged in, return to the start page
+    //     location.replace("/");
+    //   } 
+    // )
+    // })
+    RankingPage.initialize();
+    RankingPage.hide();
+    const totalGameTime = 150;
+    let gameStartTime = 0;
 
         const cv = $('canvas').get(0);
         const context = cv.getContext('2d');
@@ -3240,19 +3239,11 @@
             console.log(banana.getXY());
             requestAnimationFrame(doFrame);
 
-            // Order generation and checking loop
-            checkEmptyList();
-            gameIntervalId = requestAnimationFrame(gameTick);
-
-            // Send data
-            socket.updateOrders(OrderList1);
-            socket.updatePlayerBag(player1Bag);
-            socket.updateScore(balance);
-
-            // Receive data
-            socket.updateOpponent();
-        });
-    </script>
+      // Order generation and checking loop
+      checkEmptyList();
+      gameIntervalId = requestAnimationFrame(gameTick);
+    });
+  </script>
 
 </body>
 
