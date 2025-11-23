@@ -110,7 +110,7 @@ const gameRoom = function(groupId, player1, player2, io){
 
         gameStatus.syncTimer = setInterval(() => {
             syncRemainingTime();
-        }, 5000);
+        }, 1000);
 
         obstacleTimer = setInterval(() => {
             handleObstacle();
