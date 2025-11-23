@@ -143,6 +143,12 @@ const Socket = (function() {
             sounds.complete.pause();
             const gameArea = document.getElementById("game-container");
             gameArea.style.display = "none";
+
+            const signoutContainer = document.getElementsByClassName("signout-container ranking"); 
+            const front = document.getElementsByClassName("front ranking");
+            signoutContainer[0].style.visibility = "visible";
+            front[0].style.visibility = "visible";
+
             console.log("Game over!");
             RankingPage.show();
         })
