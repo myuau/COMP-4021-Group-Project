@@ -266,6 +266,13 @@ io.on("connection", (socket) => {
         }
     });
 
+    socket.on("complete", () => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handleOrderComplete(socket.id);
+        }
+    })
+
     socket.on("game field", (data) => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if (gameRoom) {
@@ -282,6 +289,26 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         matchPool.handleDisconnect(socket);
+    });
+
+    // Additional
+    socket.on("update DataBase", (data) => {
+        const dataBase = JSON.parse(fs.readFileSync("data/userData.json", "utf-8"));
+        const playerIndex = dataBase.findIndex(item => item.id === data.id);
+        dataBase[playerIndex] = {
+            "id": data.id,
+            "bagItems": data.bag,
+            "orderList": data.orders,
+            "cash": data.score
+        }
+        fs.writeFileSync("data/userData.json", JSON.stringify(dataBase, null, 2));
+        io.emit("gameData", dataBase);
+    });
+    socket.on("get Ids", () => {
+        const users = JSON.parse(fs.readFileSync("data/users.json", "utf-8"));
+        socket.emit("Ids", {
+            // Find the userId based on the session user
+        });
     });
 });
 

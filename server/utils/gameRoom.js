@@ -33,7 +33,7 @@ const gameRoom = function(groupId, player1, player2, io){
     
     let gameStatus = {
         status: "waiting",
-        duration: 20000,
+        duration: 20000, // 3 mins -- 180000s
         startTime: null,
         endTime: null,
         timer: null,
@@ -130,7 +130,6 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handlePlayerMove = function(playerId, isMoved, dir){
-        console.log("player ", playerId, isMoved, dir);
         broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, dir: dir });
     };
 
@@ -168,6 +167,10 @@ const gameRoom = function(groupId, player1, player2, io){
         }
     };
 
+    const handleOrderComplete = function(playerId){
+        broadcastToOther(playerId, "opponent complete", null);
+    }
+
     const handleEndGame = function(){
         if (gameStatus.status === "end") return;
         
@@ -186,24 +189,72 @@ const gameRoom = function(groupId, player1, player2, io){
             clearInterval(gameStatus.syncTimer);
             gameStatus.syncTimer = null;
         }
-
+    
         const playerArray = Object.values(players);
-        playerArray.sort((a, b) => b.score - a.score);
         
-        const ranking = playerArray.map((player, index) => ({
-            id: player.id,
-            score: player.score,
-            rank: index + 1
-        }));
-
+        let ranking;
+        if (playerArray[0].score > playerArray[1].score) {
+            ranking = [
+                {
+                    id: playerArray[0].id,
+                    username: playerArray[0].username,
+                    userId: playerArray[0].userId,
+                    score: playerArray[0].score,
+                    rank: 1
+                },
+                {
+                    id: playerArray[1].id,
+                    username: playerArray[1].username,
+                    userId: playerArray[1].userId,
+                    score: playerArray[1].score,
+                    rank: 2
+                }
+            ];
+        } else if (playerArray[1].score > playerArray[0].score) {
+            ranking = [
+                {
+                    id: playerArray[1].id,
+                    username: playerArray[1].username,
+                    userId: playerArray[1].userId,
+                    score: playerArray[1].score,
+                    rank: 1
+                },
+                {
+                    id: playerArray[0].id,
+                    username: playerArray[0].username,
+                    userId: playerArray[0].userId,
+                    score: playerArray[0].score,
+                    rank: 2
+                }
+            ];
+        } else {
+            ranking = [
+                {
+                    id: playerArray[0].id,
+                    username: playerArray[0].username,
+                    userId: playerArray[0].userId,
+                    score: playerArray[0].score,
+                    rank: 1
+                },
+                {
+                    id: playerArray[1].id,
+                    username: playerArray[1].username,
+                    userId: playerArray[1].userId,
+                    score: playerArray[1].score,
+                    rank: 1
+                }
+            ];
+        }
+    
         console.log(`Room ${groupId} Game over`);
-
+    
         io.to(groupId).emit("final score", {
             groupId: groupId,
             ranking: ranking,
-            endTime: gameStatus.endTime
+            endTime: gameStatus.endTime,
+            isTie: playerArray[0].score === playerArray[1].score
         });
-
+    
         cleanup();
     };
 
@@ -256,6 +307,7 @@ const gameRoom = function(groupId, player1, player2, io){
         handleScore,
         handleEndGame,
         handlePlayerTrap,
+        handleOrderComplete,
         getOpponent,
         cleanup,
         getStatus
