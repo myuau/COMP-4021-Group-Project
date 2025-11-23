@@ -11,6 +11,7 @@ const Socket = (function() {
     let playerAttribute = null;
     let opponentAttribute = null;
     let banana = null;
+    let sounds = null;
 
     const getPlayer = function(player) {
         player = player;
@@ -26,6 +27,9 @@ const Socket = (function() {
     }
     const getBanana = function(bananaObj) {
         banana = bananaObj;
+    }
+    const getSounds = function(soundsObj) {
+        sounds = soundsObj;
     }
 
     const getGroupId = function() {
@@ -45,10 +49,16 @@ const Socket = (function() {
         // params: 
         // startTime -- time when the game starts
         // duration -- duration of the game
-        socket.on("game start", ({startTime, duration}) => {
+        socket.on("game start", ({startTime, duration, player1, player2}) => {
             // setup the timer in UI
             // initialize the player and other objects
         });
+
+        // get the opponent info
+        // username, userId
+        socket.on("opponent info", ({username, userId}) => {
+            // write code inside if you need this endpoint
+        })
 
         // synchronize the remaining time of the game with both players
         // so as to avoid the effect of transmission delay
@@ -116,13 +126,25 @@ const Socket = (function() {
             // add trap audio effect
         })
 
+        socket.on("opponent complete", () => {
+            // add sound effect when the opponent complete an order
+            sounds.complete.pause();
+            sounds.complete.currentTime = 0;
+            sounds.complete.play();
+        })
+
         // get the final score
         // ranking: array<Object>
         // {id, score, rank}
         socket.on("final score", ({ranking}) => {
             // hide game area, show ranking page
-            const gameArea = document.getElementById("#game-container");
-            gameArea.display = "none";
+            endGameTick(gameIntervalId);
+            sounds.background.pause();
+            sounds.complete.pause();
+            const gameArea = document.getElementById("game-container");
+            gameArea.style.display = "none";
+            console.log("Game over!");
+            RankingPage.show();
         })
 
         // get group information after pairup
@@ -200,6 +222,16 @@ const Socket = (function() {
         })
     }
 
+    // send signal to the server when the player complete an order
+    const playerCompleteOrder = function(){
+        socket.emit("complete");
+    }
+
+    // get opponent info from the server
+    const requestOpponent = function(){
+        socket.emit("opponent info");
+    }
+
     const endGame = function() {
         socket.emit("end game", {groupId: groupId});
     }
@@ -217,6 +249,9 @@ const Socket = (function() {
         sendGameField,
         playerReady,
         playerMove,
+        playerSpeedup,
+        playerCompleteOrder,
+        requestOpponent,
         updatePlayerBag,
         updateOrders,
         updateScore,
@@ -232,6 +267,7 @@ const Socket = (function() {
         getGroupId,
         getPlayerAttribute,
         getOpponentAttribute,
-        getBanana
+        getBanana,
+        getSounds
     };
 })();
