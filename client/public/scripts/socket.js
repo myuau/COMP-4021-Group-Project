@@ -116,6 +116,11 @@ const Socket = (function() {
             // add trap audio effect
         })
 
+        // receive when the opponent complete an order
+        socket.on("opponent complete", () => {
+            // add sound effect when the opponent complete an order
+        })
+
         // get the final score
         // ranking: array<Object>
         // {id, username, userId, score, rank}
@@ -204,6 +209,11 @@ const Socket = (function() {
         })
     }
 
+    // send signal to the server when the player complete an order
+    const playerCompleteOrder = function(){
+        socket.emit("complete");
+    }
+
     // get opponent info from the server
     const requestOpponent = function(){
         socket.emit("opponent info");
@@ -227,6 +237,7 @@ const Socket = (function() {
         playerReady,
         playerMove,
         playerSpeedup,
+        playerCompleteOrder,
         requestOpponent,
         updatePlayerBag,
         updateOrders,

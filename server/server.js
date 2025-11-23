@@ -266,7 +266,14 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("game field", (data) => {
+    socket.on("complete", () => {
+        const gameRoom = matchPool.getPlayerRoom(socket.id);
+        if(gameRoom){
+            gameRoom.handleOrderComplete(socket.id);
+        }
+    })
+
+    socket.on("game field", () => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if (gameRoom) {
             gameRoom.getGameField(data);

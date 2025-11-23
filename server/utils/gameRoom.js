@@ -167,6 +167,10 @@ const gameRoom = function(groupId, player1, player2, io){
         }
     };
 
+    const handleOrderComplete = function(playerId){
+        broadcastToOther(playerId, "opponent complete", null);
+    }
+
     const handleEndGame = function(){
         if (gameStatus.status === "end") return;
         
@@ -303,6 +307,7 @@ const gameRoom = function(groupId, player1, player2, io){
         handleScore,
         handleEndGame,
         handlePlayerTrap,
+        handleOrderComplete,
         getOpponent,
         cleanup,
         getStatus
