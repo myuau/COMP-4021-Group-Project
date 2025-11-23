@@ -204,12 +204,9 @@ const Socket = (function() {
         })
     }
 
+    // get opponent info from the server
     const requestOpponent = function(){
         socket.emit("opponent info");
-    }
-
-    const playerTrap = function(){
-        socket.emit("trap");
     }
 
     const endGame = function() {
@@ -230,7 +227,6 @@ const Socket = (function() {
         playerReady,
         playerMove,
         playerSpeedup,
-        playerTrap,
         requestOpponent,
         updatePlayerBag,
         updateOrders,
