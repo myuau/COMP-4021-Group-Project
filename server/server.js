@@ -273,7 +273,7 @@ io.on("connection", (socket) => {
         }
     })
 
-    socket.on("game field", () => {
+    socket.on("game field", (data) => {
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if (gameRoom) {
             gameRoom.getGameField(data);
