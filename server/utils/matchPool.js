@@ -9,7 +9,17 @@ const matchPool = function(io) {
 
     // check if the user does not match
     const handleMatchRequest = function(socket) {
+        if (!socket.request.session || !socket.request.session.user){
+            console.error("Match error: do not login")
+            socket.emit("match error", {
+                isMatched: false,
+                message: "Please login before matching!"
+            });
+            return;
+        }
+
         if (queue.includes(socket) || playerGroups[socket.id]) {
+            console.error("match error: already matched");
             socket.emit("match error", {
                 isMatched: true,
                 message: "already matched"
@@ -39,18 +49,24 @@ const matchPool = function(io) {
 
             // record group info
             const group = {
-                player1: player1.request.session.user,
-                player2: player2.request.session.user,
+                player1: {
+                    ...player1.request.session.user,
+                    id: player1.id
+                },
+                player2: {
+                    ...player2.request.session.user,
+                    id: player2.id
+                },
                 createdAt: Date.now(),
                 room: room
             };
 
             groups[targetGroupId] = group;
             
-            playerGroups[player1.request.session.user] = targetGroupId;
-            playerGroups[player2.request.session.user] = targetGroupId;
+            playerGroups[player1.id] = targetGroupId;
+            playerGroups[player2.id] = targetGroupId;
 
-            console.log(`Match Successfully! Group ${targetGroupId}: ${player1.request.session.user} vs ${player2.request.session.user}`);
+            console.log(`Match Successfully! Group ${targetGroupId}: ${player1.request.session.user.username} vs ${player2.request.session.user.username}`);
 
             // emit signal
             player1.emit("match success", {
@@ -113,11 +129,10 @@ const matchPool = function(io) {
             delete gameRooms[targetGroupId];
         }
         
-        if (targetGroupId) {
+        if (targetGroupId && groups[targetGroupId]) {
             const targetGroup = groups[targetGroupId];
             if (targetGroup) {
-                const opponentId = socketId === targetGroup.player1 ? targetGroup.player2 : targetGroup.player1;
-                
+                let opponentId = targetGroup.player1.id === socketId ? targetGroup.player2id : targetGroup.player1.id;
                 if (opponentId) {
                     io.to(opponentId).emit("opponent disconnect", {
                         message: "opponent disconnects"

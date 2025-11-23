@@ -1,4 +1,10 @@
 const gameRoom = function(groupId, player1, player2, io){
+    if(!player1.request.session.user || !player2.request.session.user){
+        console.error("Session is not defined!");
+        return;
+    }
+    console.log(player1.request.session.user);
+
     const players = {
         [player1.id]: {
             id: player1.id, // socket id
@@ -124,7 +130,8 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handlePlayerMove = function(playerId, isMoved, dir){
-        broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, direction: dir });
+        console.log("player ", playerId, isMoved, dir);
+        broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, dir: dir });
     };
 
     const handlePlayerSpeedup = function(playerId, speedup){
@@ -151,9 +158,10 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handleScore = function(playerId, score){
+        console.log("player score", playerId, score);
         if (players[playerId]) {
             players[playerId].score = score;
-            broadcastToOther(playerId, "update score", {
+            broadcastToOther(playerId, "opponent score", {
                 playerId: playerId,
                 score: score
             });
@@ -217,9 +225,10 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const getOpponent = function(playerId){
+        const opponent = Object.keys(players).filter(ele => ele !== playerId);
         const info = {
-            username: playerId === player1.id ? player1.username : player2.username,
-            userId: playerId === player1.id ? player1.userId : player2.userId,
+            username: players[opponent[0]].username,
+            userId: players[opponent[0]].userId
         }
         broadcastToOther(playerId, "opponent info", info);
     }

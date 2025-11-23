@@ -2681,7 +2681,9 @@
       Authentication.validate(() => {
         // initialize and run the game here
         Socket.connect();
-        Socket.getOpponent()
+        setInterval(()=>{
+          Socket.getOpponent();
+        }, 2000);
 
         RankingPage.initialize();
     RankingPage.hide();

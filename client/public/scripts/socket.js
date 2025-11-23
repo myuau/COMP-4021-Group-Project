@@ -7,7 +7,10 @@ const Socket = (function() {
     };
 
     const connect = function() {
-        socket = io(BASE_URL);
+        socket = io(BASE_URL, {
+            withCredentials: true,
+            transports: ['websocket', 'polling']
+        });
 
         socket.on("connect", () => {
             socket.emit("request match");
@@ -28,7 +31,6 @@ const Socket = (function() {
         // username, userId
         socket.on("opponent info", ({username, userId}) => {
             // write code inside if you need this endpoint
-            console.log(username, userId);
         })
 
         // synchronize the remaining time of the game with both players
@@ -58,6 +60,7 @@ const Socket = (function() {
         // receive the scores of the opponent
         socket.on("opponent score", ({score}) => {
             // update the score of the opponent in UI
+            console.log("opponent score", score);
         })
 
         // receive if the opponent speedup
@@ -125,6 +128,7 @@ const Socket = (function() {
     // - `3` - moving to the right
     // - `4` - moving down
     const playerMove = function(isMoved, dir){
+        console.log("player move ", isMoved, dir);
         socket.emit("move", {
             isMoved: isMoved,
             dir: dir
@@ -149,6 +153,7 @@ const Socket = (function() {
 
     // update the score of the player to the server
     const updateScore = function(score){
+        console.log("player score", score);
         socket.emit("update score", {
             score: score
         })
