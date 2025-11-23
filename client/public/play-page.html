@@ -2640,6 +2640,8 @@
 
   </div>
 
+  <!-- Ranking Page -->
+  <div id="pairup-bg-filter"></div>
   <div class="signout-container ranking">
       <button class="signout-btn ranking">
           <img src="assets/img/logout-icon.png" alt="logout"/>
@@ -2649,16 +2651,6 @@
       <h1 class="front-header" style="margin-top: 20px;">Result</h1>
       <div class="front-container ranking">
           <table id="ranking-table">
-              <tr>
-                  <td class="ranking">1</td>
-                  <td class="ranking-username">Cherry</td>
-                  <td class="score">100</td>
-              </tr>
-              <tr>
-                  <td class="ranking">-</td>
-                  <td class="ranking-username">Cherry</td>
-                  <td class="score">100</td>
-              </tr>
           </table>
       </div>
       <button class="submit-btn" id="new-game">Start New Game</button>
@@ -2674,6 +2666,7 @@
   <script src="scripts/collect.js"></script>
   <script src="scripts/complete.js"></script>
   <script src="scripts/obstacle.js"></script>
+  <script src="scripts/audio.js"></script>
   <script src="scripts/ui.js"></script>
   <script>
     // uncomment this part when finish development
@@ -2689,6 +2682,7 @@
             left: 40,
             right: 700
         })
+          Socket.updateScore(100);
         }, 2000);
 
         RankingPage.initialize();

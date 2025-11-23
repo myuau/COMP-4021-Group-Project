@@ -371,26 +371,51 @@ const PairupPage = (function(){
 
 const RankingPage = (function(){
     const initialize = function(){
+        $("#pairup-bg-filter").hide();
         $(".signout-btn.ranking").click((e) => {
             e.preventDefault();
 
             Socket.endGame();
             Socket.disconnect();
             Authentication.signout();
-            UI.initialize();
+            location.replace("/");
         });
 
         $("#new-game").click(() => {
             Socket.endGame();
             hide();
-            InstructionPage.show();
+            location.replace("/");
         })
 
         $(".signout-container.ranking").hide();
         $(".front.ranking").hide();
     };
 
+    const setRanking = function(ranking, isTie){
+        if(isTie){
+            $("#ranking-table").append(`<tr>
+                <td class="ranking">${ranking[0].rank}</td>
+                <td class="ranking-username">${ranking[0].username}</td>
+                <td class="score">${ranking[0].score}</td>
+            </tr>
+            <tr>
+                <td class="ranking">-</td>
+                <td class="ranking-username">${ranking[1].username}</td>
+                <td class="score">${ranking[1].score}</td>
+            </tr>`)
+        } else{
+            for (let i = 0; i < ranking.length; i++){
+                $("#ranking-table").append(`<tr>
+                    <td class="ranking">${ranking[i].rank}</td>
+                    <td class="ranking-username">${ranking[i].username}</td>
+                    <td class="score">${ranking[i].score}</td>
+                </tr>`)
+            }
+        }
+    }
+
     const show = function(){
+        $("#pairup-bg-filter").fadeIn(500);
         $(".signout-container.ranking").fadeIn(500);
         $(".front.ranking").fadeIn(500);
     }
@@ -400,19 +425,14 @@ const RankingPage = (function(){
         $(".front.ranking").hide();
     };
 
-    return { initialize, show, hide };
+    return { initialize, setRanking, show, hide };
 })();
 
 const UI = (function(){
     const frontComponents = [LoginForm, RegisterForm, FrontPage, Toast, InstructionPage, PairupPage];
-    const gameComponents = [RankingPage];
 
     const initialize = function() {
         for (const component of frontComponents) {
-            component.initialize();
-        }
-
-        for(const component of gameComponents){
             component.initialize();
         }
     };

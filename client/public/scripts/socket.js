@@ -81,9 +81,13 @@ const Socket = (function() {
 
         // get the final score
         // ranking: array<Object>
-        // {id, score, rank}
-        socket.on("final score", ({ranking}) => {
+        // {id, username, userId, score, rank}
+        // isTie: boolean
+        socket.on("final score", ({ranking, isTie}) => {
+            console.log(ranking, isTie);
             // hide game area, show ranking page
+            RankingPage.setRanking(ranking, isTie);
+            RankingPage.show();
         })
 
         // get group information after pairup
@@ -168,6 +172,10 @@ const Socket = (function() {
         socket.emit("opponent info");
     }
 
+    const playerTrap = function(){
+        socket.emit("trap");
+    }
+
     const endGame = function() {
         socket.emit("end game", {groupId: groupId});
     }
@@ -182,6 +190,7 @@ const Socket = (function() {
         playerReady,
         playerMove,
         playerSpeedup,
+        playerTrap,
         getOpponent,
         updatePlayerBag,
         updateOrders,
