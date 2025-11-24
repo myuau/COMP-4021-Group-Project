@@ -419,7 +419,6 @@ td.score{
     text-align: right;
 }
 
-/* 游戏页面样式 */
 .front.game {
     position: absolute;
     top: 0;
@@ -566,9 +565,9 @@ td.score{
 
 #counter text {
     font-size: 8vh;
-    fill: white;
-    stroke: black;
-    stroke-width: 0.1vw;
+    fill: #ffffff;
+    stroke: #000000;
+    stroke-width: 1.7px;
 }
 
 #balance-container1{
@@ -590,15 +589,15 @@ td.score{
 
 #balance-container1 text{
     font-size: 5vh;
-    fill: green;
-    stroke: black;
-    stroke-width: 0.05vw;
+    fill: #3bb703;
+    stroke: #000000;
+    stroke-width: 1.1px;
 }
 #balance-container2 text{
     font-size: 5vh;
-    fill: green;
-    stroke: black;
-    stroke-width: 0.05vw;
+    fill: #3bb703;
+    stroke: #000000;
+    stroke-width: 1.1px;
 }
 
 #player1-holding, #player2-holding{
@@ -652,9 +651,9 @@ td.score{
 
 .player-orders {
     width: 49.9%;
-    padding: 1%;
+    padding: 8px;
     background-color: #ec411f;
-    border:#862511, solid 0.3vw;
+    border:#862511 solid 5px;
     border-radius: 10px;
 }
 
@@ -667,12 +666,19 @@ td.score{
 }
 
 .order-list {
+    margin-top: 5px;
+    padding-inline-start: 14px;
     list-style-type: none;
     display: flex;
     flex-direction: row;
     gap: 0.8vw;
     height: 100%;
-    width: 100%;
+    width: 98%;
+    box-sizing: border-box;
+}
+
+text{
+    font-weight: 600;
 }
 
 .order-item {
@@ -690,6 +696,7 @@ td.score{
     height: 70%;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .order-header-bar {
@@ -700,7 +707,6 @@ td.score{
     border-bottom: 0.2vw solid #eee;
     padding-bottom: 0.4vh;
     width: 12vw;
-    height: 10vh;
 }
 
 .order-type {
@@ -722,15 +728,16 @@ td.score{
 .ingredient-icons {
     display: flex;
     flex-direction: row;
-    width: 20vw;
-    height: 20vh;
+    width: 100%;
+    height: calc(100% - 1.2vw);
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .ingredient-icon {
-    width: 4vw;
-    height: 14vh;
-    translate: -0.1vw -5vh;
+    width: 25%;
+    height: 150%;
+    translate: -0.5% -15%;
     object-fit: contain;
 }

@@ -18,8 +18,8 @@ const FrontPage = (function(){
     }
     
     const hideTitle = function(){
-        $("#start-btn").fadeOut(500);
         $("#front-bg.title").fadeOut(500);
+        $("#start-btn").fadeOut(500);
     }
 
     const hide = function(){
@@ -568,13 +568,7 @@ const GamePage = (function(){
         Socket.setOpponentAttribute(opponentAttribute);
         Socket.setBanana(banana);
 
-        console.log("check connection");
-        bgm = sounds.background.play();
-        if(bgm !== undefined){
-            bgm.then(() => {}).catch(e=>{
-                console.error("backgound music error: ", e);
-            })
-        }
+        FrontPageAudio.playbg();
 
         setInterval(checkBanana, 500);
         requestAnimationFrame(doFrame);

@@ -83,7 +83,7 @@ const Socket = (function() {
 
             $("#bag1").text(`${capitalizeString(player.username)}'s Bag`);
             $("#bag2").text(`${capitalizeString(opponent.username)}'s Bag`);
-            $("#player-1-orders h2").text(`${capitalizeString(player.username)}'s Order`);
+            $("#player-1-orders h2").text(`${capitalizeString(player.username)}'s Orders`);
             $("#player-2-orders h2").text(`${capitalizeString(opponent.username)}'s Orders`);
         });
 
@@ -175,11 +175,17 @@ const Socket = (function() {
             // hide game area, show ranking page
             GamePage.gameOver();
             endGameTick(gameIntervalId);
-            sounds.background.pause();
+            FrontPageAudio.stopbg();
             sounds.complete.pause();
 
             console.log("Game over!");
-            RankingPageAudio.playGameOverbgm();
+            const gameOver = new Audio("/assets/audio/end-game.mp3");
+            bgm = gameOver.play();
+            if(bgm !== undefined){
+                bgm.then(() => {}).catch(e=>{
+                    console.error("backgound music error: ", e);
+                })
+            }
             RankingPage.setRanking(ranking, isTie);
             RankingPage.show();
         })

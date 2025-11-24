@@ -98,8 +98,8 @@ const gameRoom = function(groupId, player1, player2, io){
                     userId: players[ids[0]].userId
                 },
                 player2: {
-                    username: players[ids[0]].username,
-                    userId: players[ids[0]].userId
+                    username: players[ids[1]].username,
+                    userId: players[ids[1]].userId
                 }
             });
             
