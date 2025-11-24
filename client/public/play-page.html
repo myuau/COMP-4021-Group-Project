@@ -3011,13 +3011,13 @@
     </div>
 
   <!-- Ranking Page -->
-  <div id="pairup-bg-filter" style="visibility: hidden;z-index: 999;"></div>
-  <div class="signout-container ranking" style="visibility: hidden;z-index: 1000;">
+  <div id="pairup-bg-filter" style="z-index: 999;"></div>
+  <div class="signout-container ranking" style="z-index: 1000;">
       <button class="signout-btn ranking">
           <img src="assets/img/logout-icon.png" alt="logout"/>
       </button>
   </div>
-  <section class="front ranking" style="visibility: hidden;z-index: 1001;">
+  <section class="front ranking" style="z-index: 1001;">
       <h1 class="front-header" style="margin-top: 20px;">Result</h1>
       <div class="front-container ranking">
           <table id="ranking-table">
@@ -3043,6 +3043,40 @@
     $(function(){
         RankingPage.initialize();
         RankingPage.hide();
+
+        const savedState = localStorage.getItem('socketState');
+    
+        if (savedState) {
+            const socketState = JSON.parse(savedState);
+            console.log("Restore Socket state:", socketState);
+            
+            localStorage.removeItem('socketState');
+            
+            window.currentUser = socketState.user;
+            
+            Socket.connect();
+            
+            const checkSocketReady = setInterval(() => {
+                if (Socket.getSocket() && Socket.getSocket().connected) {
+                    clearInterval(checkSocketReady);
+                    
+                    console.log("Socket reconnect successfully!");
+                    
+                    window.groupId = socketState.groupId;
+
+                    Socket.playerReady();
+                    Socket.sendGameField({
+                        top: 60,
+                        bottom: 400,
+                        left: 40,
+                        right: 700
+                    });
+                }
+            }, 100);
+        } else {
+            console.log("Fail to get Socket state, return to home page");
+            location.replace("/");
+        }
 
       Authentication.validate(() => {
         // initialize and run the game here
@@ -3072,12 +3106,12 @@
             40: 'down'
         };
 
-                    // Sound
-                    const sounds = {
-                        background: new Audio("/assets/audio/front-bg-music.mp3"),
-                        complete: new Audio("/assets/audio/order-complete.mp3"),
-                    };
-                    Socket.getSounds(sounds);
+        // Sound
+        const sounds = {
+            background: new Audio("/assets/audio/front-bg-music.mp3"),
+            complete: new Audio("/assets/audio/order-complete.mp3"),
+        };
+        Socket.getSounds(sounds);
 
         let playerAttributes = [];
         let playerAttribute = null;
@@ -3095,30 +3129,20 @@
         let gameIntervalId;
         // Initially if the list starts empty, generate a first order.
         const currentTime = Date.now();
-        // let gameStartTime = 0;
+        let gameStartTime = 0;
 
         function doFrame(now) {
-            // if (gameStartTime == 0) {
-            //     gameStartTime = now;
-            // }
+            if (gameStartTime == 0) {
+                gameStartTime = now;
+            }
 
             /* Update the time remaining */
-            const gameTimeSoFar = Socket.getElapsedTime();
-            const timeRemaining = Socket.getRemainingTime();
-            console.log("remaining time: ", timeRemaining);
-            // const gameTimeSoFar = now - gameStartTime;
-            // const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
-            $("#time-remaining").text(timeRemaining);
+            let gameTimeSoFar = now - gameStartTime;
+            let timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+            // $("#time-remaining").text(timeRemaining);
 
             if (timeRemaining <= 0) {
                 // Time's up! Handle end of game logic here
-                endGameTick(gameIntervalId);
-                if(sounds.background){
-                    sounds.background.pause();
-                }
-                if(sounds.collect){
-                    sounds.collect.pause();
-                }
                 return;
             }
 
@@ -3334,9 +3358,8 @@
         () => {
             // if the player has not logged in, return to the start page
             location.replace("/");
-        }
-    );
-})
+        });
+    })
     </script>
 
 </body>

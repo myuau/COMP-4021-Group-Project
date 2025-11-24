@@ -1,10 +1,6 @@
-const gameRoom = function(groupId, player1, player2, io){
-    if(!player1.request.session.user || !player2.request.session.user){
-        console.error("Session is not defined!");
-        return;
-    }
-    console.log(player1.request.session.user);
+const e = require("cors");
 
+const gameRoom = function(groupId, player1, player2, io){
     if(!player1.request.session.user || !player2.request.session.user){
         console.error("Session is not defined!");
         return;
@@ -24,8 +20,6 @@ const gameRoom = function(groupId, player1, player2, io){
             id: player2.id,
             username: player2.request.session.user.username,
             userId: player2.request.session.user.userId,
-            username: player2.request.session.user.username,
-            userId: player2.request.session.user.userId,
             socket: player2,
             score: 0,
             ready: false
@@ -41,7 +35,7 @@ const gameRoom = function(groupId, player1, player2, io){
     
     let gameStatus = {
         status: "waiting",
-        duration: 180000, // 3 mins -- 180000s
+        duration: 20000, // 3 mins -- 180000s
         startTime: null,
         endTime: null,
         timer: null,
@@ -92,31 +86,24 @@ const gameRoom = function(groupId, player1, player2, io){
         if (Object.values(players).every(player => player.ready)) {
             gameStatus.startTime = Date.now();
             gameStatus.status = "playing";
+
+            const ids = Object.keys(players);
             
             console.log(`Room ${groupId} game start`);
             io.to(groupId).emit("game start", {
                 startTime: gameStatus.startTime,
-                duration: gameStatus.duration,
+                duration: gameStatus.duration / 1000,
                 player1: {
-                    username: player1.username,
-                    userId: player1.userId
+                    username: players[ids[0]].username,
+                    userId: players[ids[0]].userId
                 },
                 player2: {
-                    username: player2.username,
-                    userId: player2.userId
-                }
-                duration: gameStatus.duration,
-                player1: {
-                    username: player1.username,
-                    userId: player1.userId
-                },
-                player2: {
-                    username: player2.username,
-                    userId: player2.userId
+                    username: players[ids[0]].username,
+                    userId: players[ids[0]].userId
                 }
             });
             
-            startGameTimer();
+            setTimeout(startGameTimer, 1000);
         }
     };
 
@@ -127,7 +114,6 @@ const gameRoom = function(groupId, player1, player2, io){
 
         gameStatus.syncTimer = setInterval(() => {
             syncRemainingTime();
-        }, 1000);
         }, 1000);
 
         obstacleTimer = setInterval(() => {
@@ -140,7 +126,7 @@ const gameRoom = function(groupId, player1, player2, io){
 
         let elapsed = Date.now() - gameStatus.startTime;
         const remaining = Math.floor(Math.max(0, gameStatus.duration - elapsed) / 1000);
-        elapsed = Math.floow(elapsed / 1000);
+        elapsed = Math.floor(elapsed / 1000);
 
         io.to(groupId).emit('sync time', {
             remainingTime: remaining,
@@ -149,30 +135,42 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handlePlayerMove = function(playerId, isMoved, dir){
-        broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, dir: dir });
+        if(!endGame()){
+            broadcastToOther(playerId, "opponent move", { playerId, isMoved: isMoved, dir: dir });
+        }
     };
 
     const handlePlayerSpeedup = function(playerId, speedup){
-        broadcastToOther(playerId, "opponent speedup", { playerId, speedup: speedup });
+        if(!endGame()){
+            broadcastToOther(playerId, "opponent speedup", { playerId, speedup: speedup });
+        }
     };
 
     const handlePlayerTrap = function(playerId){
-        broadcastToOther(playerId, "opponent trap", null);
+        if(!endGame()){
+            broadcastToOther(playerId, "opponent trap", null);
+        }
     }
 
     const handleOrders = function(playerId, orders){
-        broadcastToOther(playerId, "opponent orders", { playerId, orders });
+        if(!endGame()){
+            broadcastToOther(playerId, "opponent orders", { playerId, orders });
+        }
     };
 
     const handleItems = function(playerId, items){
-        broadcastToOther(playerId, "opponent items", { playerId, items });
+        if(!endGame()){
+            broadcastToOther(playerId, "opponent items", { playerId, items });
+        }
     };
 
     const handleObstacle = function(){
-        const position = randomPoint();
-        io.to(groupId).emit("update obstacle", {
-            position: position
-        });
+        if(!endGame()){
+            const position = randomPoint();
+            io.to(groupId).emit("update obstacle", {
+                position: position
+            });
+        }
     };
 
     const handleScore = function(playerId, score){
@@ -184,10 +182,6 @@ const gameRoom = function(groupId, player1, player2, io){
             });
         }
     };
-
-    const handleOrderComplete = function(playerId){
-        broadcastToOther(playerId, "opponent complete", null);
-    }
 
     const handleOrderComplete = function(playerId){
         broadcastToOther(playerId, "opponent complete", null);
@@ -214,63 +208,6 @@ const gameRoom = function(groupId, player1, player2, io){
     
     
         const playerArray = Object.values(players);
-        
-        let ranking;
-        if (playerArray[0].score > playerArray[1].score) {
-            ranking = [
-                {
-                    id: playerArray[0].id,
-                    username: playerArray[0].username,
-                    userId: playerArray[0].userId,
-                    score: playerArray[0].score,
-                    rank: 1
-                },
-                {
-                    id: playerArray[1].id,
-                    username: playerArray[1].username,
-                    userId: playerArray[1].userId,
-                    score: playerArray[1].score,
-                    rank: 2
-                }
-            ];
-        } else if (playerArray[1].score > playerArray[0].score) {
-            ranking = [
-                {
-                    id: playerArray[1].id,
-                    username: playerArray[1].username,
-                    userId: playerArray[1].userId,
-                    score: playerArray[1].score,
-                    rank: 1
-                },
-                {
-                    id: playerArray[0].id,
-                    username: playerArray[0].username,
-                    userId: playerArray[0].userId,
-                    score: playerArray[0].score,
-                    rank: 2
-                }
-            ];
-        } else {
-            ranking = [
-                {
-                    id: playerArray[0].id,
-                    username: playerArray[0].username,
-                    userId: playerArray[0].userId,
-                    score: playerArray[0].score,
-                    rank: 1
-                },
-                {
-                    id: playerArray[1].id,
-                    username: playerArray[1].username,
-                    userId: playerArray[1].userId,
-                    score: playerArray[1].score,
-                    rank: 1
-                }
-            ];
-        }
-    
-        
-        let ranking;
         if (playerArray[0].score > playerArray[1].score) {
             ranking = [
                 {
@@ -332,8 +269,6 @@ const gameRoom = function(groupId, player1, player2, io){
             ranking: ranking,
             endTime: gameStatus.endTime,
             isTie: playerArray[0].score === playerArray[1].score
-            endTime: gameStatus.endTime,
-            isTie: playerArray[0].score === playerArray[1].score
         });
     
         cleanup();
@@ -365,15 +300,6 @@ const gameRoom = function(groupId, player1, player2, io){
         broadcastToOther(playerId, "opponent info", info);
     }
 
-    const getOpponent = function(playerId){
-        const opponent = Object.keys(players).filter(ele => ele !== playerId);
-        const info = {
-            username: players[opponent[0]].username,
-            userId: players[opponent[0]].userId
-        }
-        broadcastToOther(playerId, "opponent info", info);
-    }
-
     const getStatus = function() {
         return {
             groupId: groupId,
@@ -384,6 +310,10 @@ const gameRoom = function(groupId, player1, player2, io){
             )
         };
     };
+
+    const endGame = function(){
+        return gameStatus.status === "end";
+    }
 
     return {
         getGameField,

@@ -418,3 +418,319 @@ p.cheat{
 td.score{
     text-align: right;
 }
+
+/* 游戏页面样式 */
+.front.game {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-color: #333;
+}
+
+#kitchen-area {
+    background-image: url('./img/background.jpg');
+    width: 100%;
+    height: 80%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    text-indent: -9999px;
+}
+
+.top{
+    position: absolute;
+    transform: skew(-20deg, 0deg);
+}
+.cab-body{
+    position: absolute;
+}
+.cab-side{
+    position: absolute;
+}
+
+#fried-chips-cabinet {
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 5%;
+    left: 10%;
+}
+#bread-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 5%;
+    left: 30%;
+}
+#coke-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 5%;
+    left: 50%;
+}
+#fish-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 5%;
+    left: 70%;
+}
+#trash-bin {
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 12%;
+    left: 85%;
+}
+
+#fried-chips{
+    transform: translate(23px,17px);
+}
+#bread {
+    transform: translate(28px,18px);
+}
+#coke {
+    transform: translate(35px,17px);
+}
+#fish {
+    transform: translate(7px,10px);
+}
+
+#beef-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 45%;
+    left: 0%;
+}
+#lettuce-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 45%;
+    left: 20%;
+}
+#cheese-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 45%;
+    left: 55%;
+}
+#chicken-cabinet {
+    z-index: 10;
+    position: absolute;
+    width: 20%; 
+    height: 20%;
+    top: 45%;
+    left: 75%;
+}
+
+#beef {
+    transform: translate(17px,17px);
+}
+#lettuce {
+    transform: translate(10px,6px);
+}
+#cheese {
+    transform: translate(30px,15px);
+}
+#chicken {
+    transform: translate(10px,-5px);
+}
+
+#counter {
+    z-index: 10;
+    position: absolute;
+    height: 10vh;
+    width: 25vw;
+}
+
+#counter text {
+    font-size: 8vh;
+    fill: white;
+    stroke: black;
+    stroke-width: 0.1vw;
+}
+
+#balance-container1{
+    z-index: 10;
+    position: absolute;
+    height: 10vh;
+    width: 25vw;
+    top: 5vh;
+}
+
+#balance-container2 {
+    z-index: 10;
+    position: absolute;
+    height: 10vh;
+    width: 25vw;
+    top: 5vh;
+    left: 84%;
+}
+
+#balance-container1 text{
+    font-size: 5vh;
+    fill: green;
+    stroke: black;
+    stroke-width: 0.05vw;
+}
+#balance-container2 text{
+    font-size: 5vh;
+    fill: green;
+    stroke: black;
+    stroke-width: 0.05vw;
+}
+
+#player1-holding, #player2-holding{
+    position: absolute;
+    height: 15%;
+    width: 28%;
+    top: 64%;
+    left: 0%;
+}
+#player2-holding {
+    left: 76%;
+}
+.held-food-group1{
+    display: flex; 
+    flex-direction: row;
+    width: 20vw;
+    height: 20vh;
+    justify-content: center;
+    align-items: center;
+}
+.bag-item {
+    width: 22%;
+    height: 70%;
+    object-fit: contain; 
+    translate: 0.5vw 0vh;
+}
+
+#table{
+    position: absolute;
+    height: 45%;
+    width: 50%;
+    top: 64%;
+    left: 25.5%;
+}
+
+#cashier-counter{
+    position: absolute;
+    height: 200%;
+    width: 180%;
+    top: 54%;
+    left: 44%;
+}
+
+#order-area {
+    height: 20%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #d2b48c;
+}
+
+.player-orders {
+    width: 49.9%;
+    padding: 1%;
+    background-color: #ec411f;
+    border:#862511, solid 0.3vw;
+    border-radius: 10px;
+}
+
+.player-orders h2 {
+    font-size: 1.8vw;
+    text-align: center;
+    color: #fff;
+    margin-top: 0vw;
+    margin-bottom: 0.2vw;
+}
+
+.order-list {
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+    gap: 0.8vw;
+    height: 100%;
+    width: 100%;
+}
+
+.order-item {
+    background-color: #fffefa;
+    border: 0.15vw solid #a0a0a0;
+    border-radius: 0.2vw;
+    padding: 0.1vw 0.1vw;
+    margin-bottom: 0.2vw;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: calc((100% - 3%) / 3);
+    flex-shrink: 0;
+    height: 70%;
+    display: flex;
+    align-items: center;
+}
+
+.order-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    border-bottom: 0.2vw solid #eee;
+    padding-bottom: 0.4vh;
+    width: 12vw;
+    height: 10vh;
+}
+
+.order-type {
+    font-size: 1.2vw;
+    flex-grow: 1;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+}
+
+.order-price {
+    font-size: 1.2vw;
+    width: 1.2vw;
+    text-align: right;
+    color: green;
+    margin-right: 0.5vw;
+}
+
+.ingredient-icons {
+    display: flex;
+    flex-direction: row;
+    width: 20vw;
+    height: 20vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.ingredient-icon {
+    width: 4vw;
+    height: 14vh;
+    translate: -0.1vw -5vh;
+    object-fit: contain;
+}

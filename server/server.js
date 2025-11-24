@@ -205,6 +205,30 @@ io.on("connection", (socket) => {
     if(!socket.request.session.user || !socket.request.session){
         console.error("no session...");
     }
+
+    socket.on("reconnect", (data) => {
+        const { groupId } = data;
+        console.log(`Player ${socket.id} request reconnection to group ${groupId}`);
+        
+        const gameRoom = matchPool.getGameRoom(groupId);
+        if (gameRoom) {
+            socket.join(groupId);
+            matchPool.updatePlayerSocket(groupId, socket);
+            
+            socket.emit("reconnect success", {
+                message: "Reconnect successfully",
+                gameState: gameRoom.getStatus()
+            });
+            
+            console.log(`Player ${socket.id} reconnect to group ${groupId} successfully`);
+        } else {
+            socket.emit("reconnect failed", {
+                message: "Game room does not exist."
+            });
+            console.log(`Group ${groupId} does not exist, fails to reconnect!`);
+        }
+    });
+
     socket.on("request match", () => {
         matchPool.handleMatchRequest(socket);
     });
@@ -218,6 +242,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("ready", () => {
+        console.log("player", socket.id, " ready");
         const gameRoom = matchPool.getPlayerRoom(socket.id);
         if(gameRoom){
             gameRoom.setReady(socket.id, true);

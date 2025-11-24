@@ -57,3 +57,24 @@ const FrontPageAudio = (function(){
         stopPairupWaitAudio 
     };
 })();
+
+const RankingPageAudio = (function(){
+    const playGameOverbgm = function(){
+        const audio = $("#ranking-game-over-bgm")[0];
+        audio.currentTime = 0;
+        audio.muted = false;
+        audio.loop = false;
+        audio.play();
+    }
+
+    const stopGameOverbgm = function(){
+        const audio = $("#ranking-game-over-bgm")[0];
+        audio.pause();
+        audio.currentTime = 0;
+    }
+    
+    return {
+        playGameOverbgm,
+        stopGameOverbgm
+    }
+})

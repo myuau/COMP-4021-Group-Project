@@ -111,6 +111,22 @@ const matchPool = function(io) {
         }
     }
 
+    // update the player socket when directed to the play-page.html
+    const updatePlayerSocket = function(groupId, newSocket) {
+        const gameRoom = gameRooms[groupId];
+        if (gameRoom) {
+            gameRoom.updatePlayerSocket(newSocket);
+            
+            const oldSocketId = Object.keys(playerGroups).find(id => playerGroups[id] === groupId);
+            if (oldSocketId) {
+                delete playerGroups[oldSocketId];
+            }
+            playerGroups[newSocket.id] = groupId;
+            
+            console.log(`Update socket id: ${oldSocketId} -> ${newSocket.id}`);
+        }
+    }
+
     // remove the user info in the pool when the user disconnect
     const handleDisconnect = function(socket) {
         const socketId = socket.id;
@@ -176,7 +192,8 @@ const matchPool = function(io) {
         handleDisconnect,
         getStatus,
         getGameRoom,
-        getPlayerRoom
+        getPlayerRoom,
+        updatePlayerSocket
     };
 };
 

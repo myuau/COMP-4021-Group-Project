@@ -247,6 +247,7 @@ const PairupPage = (function(){
         FrontPageAudio.playPairupWaitAudio();
 
         Socket.connect();
+        window.globalSocket = Socket.getSocket();
 
         if(findingTimer){
             clearTimeout(findingTimer);
@@ -342,37 +343,34 @@ const PairupPage = (function(){
         });
     }
 
-    const showCountdown = function(){
-        hideFinding();
-        $("#countdown").fadeIn(500);
-        timeCount = 4;
-
-        function countdown(){
-            timeCount--;
-            if(timeCount > 0){
-                $("#countdown").text(timeCount);
-                FrontPageAudio.playCountdownAudio();
-                setTimeout(countdown, 1000);
+        const showCountdown = function(){
+            hideFinding();
+            $("#countdown").fadeIn(500);
+            timeCount = 4;
+        
+            function countdown(){
+                timeCount--;
+                if(timeCount > 0){
+                    $("#countdown").text(timeCount);
+                    FrontPageAudio.playCountdownAudio();
+                    setTimeout(countdown, 1000);
+                }
+                else{
+                    $("#countdown").text("Start!");
+                    FrontPageAudio.playCountdownNoticeAudio();
+                    setTimeout(() => {
+                        UI.hideFront();
+                        Socket.sendGameField({
+                            top: 60,
+                            bottom: 400,
+                            left: 40,
+                            right: 700
+                        });
+                        GamePage.show();
+                    }, 1000);
+                }
             }
-            else{
-                $("#countdown").text("Start!");
-                FrontPageAudio.playCountdownNoticeAudio();
-                UI.hideFront();
-
-                Socket.sendGameField({
-                    top: 60,
-                    bottom: 400,
-                    left: 40,
-                    right: 700
-                });
-                Socket.playerReady();
-
-                $("#main-page").html(`
-                    <iframe src="./play-page.html" style="width:100%; height:100vh; border:none;"></iframe>
-                `);
-            }
-        }
-        setTimeout(countdown, 500);
+            setTimeout(countdown, 500);
     }
 
     return { initialize, show, hide, showFinding, hideFinding, showMatched, showCountdown };
@@ -387,13 +385,13 @@ const RankingPage = (function(){
             Socket.endGame();
             Socket.disconnect();
             Authentication.signout();
-            location.replace("/");
+            location.reload();
         });
 
         $("#new-game").click(() => {
             Socket.endGame();
             hide();
-            location.replace("/");
+            location.reload();
         })
 
         $(".signout-container.ranking").hide();
@@ -424,12 +422,14 @@ const RankingPage = (function(){
     }
 
     const show = function(){
+        $("#pairup-bg-filter").css({"z-index": 999});
         $("#pairup-bg-filter").fadeIn(500);
         $(".signout-container.ranking").fadeIn(500);
         $(".front.ranking").fadeIn(500);
     }
 
     const hide = function(){
+        $("#pairup-bg-filter").css({"z-index": 0});
         $(".signout-container").hide();
         $(".front.ranking").hide();
     };
@@ -437,8 +437,320 @@ const RankingPage = (function(){
     return { initialize, setRanking, show, hide };
 })();
 
+const GamePage = (function(){
+    let ready = false;
+    let totalGameTime = 150;
+    let cv, context, gameArea, STATIC_BOUNDARIES_AS_BOXES, banana;
+    let playerAttributes = [];
+    let playerAttribute = null;
+    let opponentAttribute = null;
+    let player, opponent;
+    let balance = 0;
+    let isModifyingOrders = false;
+    let gameIntervalId;
+    let gameStartTime = 0;
+    let sounds;
+    let bgm;
+
+    const initialize = function(){
+        $("#game-container").hide();
+        hide();
+    };
+
+    const show = function(){
+        initializeGame();
+        $("#game-container").fadeIn(500);
+    };
+
+    const hide = function(){
+        $("#game-container").hide();
+    };
+
+    const initializeGame = function(){
+        cv = $('canvas').get(0);
+        context = cv.getContext('2d');
+        gameArea = BoundingBox(context, 60, 40, 400, 760);
+        STATIC_BOUNDARIES_AS_BOXES = STATIC_CABINET_BOUNDARIES.map(boundary => {
+            return {
+                id: boundary.id,
+                box: BoundingBox(
+                    context,
+                    boundary.top,
+                    boundary.left,
+                    boundary.bottom,
+                    boundary.right
+                )
+            }
+        });
+
+        banana = obstacle(context, 427, 350);
+        banana.setSrc('assets/img/banana.png');
+        const dir_map = {
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down'
+        };
+
+        sounds = {
+            background: new Audio("/assets/audio/front-bg-music.mp3"),
+            complete: new Audio("/assets/audio/order-complete.mp3"),
+        };
+        Socket.setSounds(sounds);
+
+        player = Player(context, 350, 240, gameArea);
+        opponent = Player(context, 500, 240, gameArea);
+        Socket.setPlayer(player);
+        Socket.setOpponent(opponent);
+        player.setBoxes(STATIC_BOUNDARIES_AS_BOXES);
+        opponent.setBoxes(STATIC_BOUNDARIES_AS_BOXES);
+
+        const user = Authentication.getUser();
+        console.log("User: ", user);
+        const MyId = user.userId;
+        console.log("Player id: ", MyId);
+        
+        if (MyId % 2 == 0) {
+            player.setSpriteSheet("assets/img/sprite-sheet-blue.png");
+            player.setXY(400, 240);
+            opponent.setSpriteSheet("assets/img/sprite-sheet-green.png");
+            opponent.setXY(500, 240);
+
+            playerAttributes = [
+                {
+                    name: "player",
+                    orderlistElement: "order1-list",
+                    list: OrderList1,
+                    bag: player1Bag,
+                    bagId: "held-food-group1",
+                    balanceId: "balance1"
+                },
+                {
+                    name: "opponent",
+                    orderlistElement: "order2-list",
+                    list: OrderList2,
+                    bag: player2Bag,
+                    bagId: "held-food-group2",
+                    balanceId: "balance2"
+                }
+            ]
+        } else {
+            player.setSpriteSheet("assets/img/sprite-sheet-green.png");
+            player.setXY(500, 240);
+            opponent.setSpriteSheet("assets/img/sprite-sheet-blue.png");
+            opponent.setXY(400, 240);
+
+            playerAttributes = [
+                {
+                    name: "opponent",
+                    orderlistElement: "order1-list",
+                    list: OrderList1,
+                    bag: player1Bag,
+                    bagId: "held-food-group1",
+                    balanceId: "balance1"
+                },
+                {
+                    name: "player",
+                    orderlistElement: "order2-list",
+                    list: OrderList2,
+                    bag: player2Bag,
+                    bagId: "held-food-group2",
+                    balanceId: "balance2"
+                }
+            ]
+        }
+        
+        updateBags(playerAttributes);
+        updateOrderLists(playerAttributes);
+        playerAttribute = playerAttributes.find(attr => attr.name === 'player');
+        opponentAttribute = playerAttributes.find(attr => attr.name === 'opponent');
+        Socket.setPlayerAttribute(playerAttribute);
+        Socket.setOpponentAttribute(opponentAttribute);
+        Socket.setBanana(banana);
+
+        console.log("check connection");
+        bgm = sounds.background.play();
+        if(bgm !== undefined){
+            bgm.then(() => {}).catch(e=>{
+                console.error("backgound music error: ", e);
+            })
+        }
+
+        setInterval(checkBanana, 500);
+        requestAnimationFrame(doFrame);
+
+        $(document).on("keydown", function (event) {
+            dir = dir_map[event.keyCode];
+            let eventKeyCode = event.keyCode;
+            if (eventKeyCode === 37) {
+                player.move(1);
+                Socket.playerMove(true, 1);
+            } else if (eventKeyCode === 38) {
+                player.move(2);
+                Socket.playerMove(true, 2);
+            } else if (eventKeyCode === 39) {
+                player.move(3);
+                Socket.playerMove(true, 3);
+            } else if (eventKeyCode === 40) {
+                player.move(4);
+                Socket.playerMove(true, 4);
+            } else if (eventKeyCode === 32) {
+                player.speedUp();
+                Socket.playerSpeedup(true);
+            }
+        });
+        
+        $(document).on("keyup", function (event) {
+            let eventKeyCode = event.keyCode;
+            if (eventKeyCode === 37) {
+                player.stop(1);
+                Socket.playerMove(false, 1);
+            } else if (eventKeyCode === 38) {
+                player.stop(2);
+                Socket.playerMove(false, 2);
+            } else if (eventKeyCode === 39) {
+                player.stop(3);
+                Socket.playerMove(false, 3);
+            } else if (eventKeyCode === 40) {
+                player.stop(4);
+                Socket.playerMove(false, 4);
+            } else if (eventKeyCode === 32) {
+                player.slowDown();
+                Socket.playerSpeedup(false);
+            }
+        });
+
+        const cabinetBoundingBoxes = getAllCabinetBoundingBoxes();
+        $(document).on("keydown", function (event) {
+            let eventKeyCode = event.keyCode;
+            if (eventKeyCode === 69) {
+                let playerBoudingBox = player.getBoundingBox();
+                const left = playerBoudingBox.getLeft() + 12;
+                const top = playerBoudingBox.getTop();
+                if (STATIC_BOUNDARIES_AS_BOXES[4].box.isPointInBox(left, top)) {
+                    discardIngredient();
+                }
+
+                const right = playerBoudingBox.getRight() - 12;
+                const bottom = playerBoudingBox.getBottom();
+
+                STATIC_BOUNDARIES_AS_BOXES.forEach((cabinetBox) => {
+                    if (cabinetBox.id != 'trash-bin' && cabinetBox.id != 'cashier-counter') {
+                        if (cabinetBox.box.isPointInBox(left, top) || cabinetBox.box.isPointInBox(right, bottom))
+                            collectIngredient(CABINET_INGREDIENT_MAP[cabinetBox.id]);
+                    } else if (cabinetBox.id == 'cashier-counter') {
+                        if (cabinetBox.box.isPointInBox(right, bottom)) {
+                            const completeOrder = checkComplete(playerAttribute.bag, playerAttribute.list);
+                            if (completeOrder) {
+                                sounds.complete.pause();
+                                sounds.complete.currentTime = 0;
+                                sounds.complete.play();
+                                console.log("Order completed:", completeOrder);
+                                removeOrderFromList(completeOrder,  playerAttribute.list);
+                                Socket.updateOrders(playerAttribute.list);
+                                while (playerAttribute.bag.length > 0) {
+                                    playerAttribute.bag.shift();
+                                }
+                                Socket.updatePlayerBag(playerAttribute.bag);
+                                balance += completeOrder.price;
+                                const playerCash = document.getElementById(playerAttribute.balanceId);
+                                playerCash.textContent = balance;
+                                Socket.updateScore(balance);
+                                Socket.playerCompleteOrder();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        checkEmptyList();
+        gameIntervalId = requestAnimationFrame(gameTick);
+    };
+
+    function doFrame(now) {
+        if (gameStartTime == 0) {
+            gameStartTime = now;
+        }
+
+        let gameTimeSoFar = now - gameStartTime;
+        let timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+
+        if (timeRemaining <= 0) {
+            return;
+        }
+
+        player.update(now);
+        opponent.update(now);
+        context.clearRect(0, 0, cv.width, cv.height);
+        banana.draw();
+        player.draw();
+        opponent.draw();
+
+        requestAnimationFrame(doFrame);
+    }
+
+    function checkBanana() {
+        let playerBbox = {
+            top: player.getBoundingBox().getTop(),
+            left: player.getBoundingBox().getLeft(),
+            bottom: player.getBoundingBox().getBottom(),
+            right: player.getBoundingBox().getRight()
+        };
+        let bananaBbox = banana.getBoundingBox();
+
+        if (overlap(playerBbox, bananaBbox)) {
+            Socket.PlayerTrap();
+            if (playerAttribute.bag.length > 0) {
+                playerAttribute.bag.shift();
+                Socket.updatePlayerBag(playerAttribute.bag);
+            } else {
+                balance -= 5;
+                const playerCash = document.getElementById(playerAttribute.balanceId);
+                playerCash.textContent = balance;
+                Socket.updateScore(balance);
+            }
+        }
+
+        if(!ready){
+            Socket.playerReady();
+            ready = true;
+        }
+    }
+
+    const gameOver = function() {
+        if (gameIntervalId) {
+            cancelAnimationFrame(gameIntervalId);
+        }
+        
+        if (sounds) {
+            sounds.background.pause();
+            sounds.complete.pause();
+        }
+        
+        $(document).off("keydown.game");
+        $(document).off("keyup.game");
+        
+        player.stop(1);
+        player.stop(2);
+        player.stop(3);
+        player.stop(4);
+        player.slowDown();
+        
+        opponent.stop(1);
+        opponent.stop(2);
+        opponent.stop(3);
+        opponent.stop(4);
+        opponent.slowDown();
+        
+        console.log("Game Over - All actions stopped");
+    };
+
+    return { initialize, show, hide, initializeGame, gameOver };
+})();
+
 const UI = (function(){
-    const frontComponents = [LoginForm, RegisterForm, FrontPage, Toast, InstructionPage, PairupPage];
+    const frontComponents = [LoginForm, RegisterForm, FrontPage, Toast, InstructionPage, PairupPage, GamePage, RankingPage];
 
     const initialize = function() {
         for (const component of frontComponents) {
@@ -448,7 +760,9 @@ const UI = (function(){
 
     const hideFront = function(){
         for(const component of frontComponents){
-            component.hide();
+            if(component !== GamePage && component !== RankingPage){
+                component.hide();
+            }
         }
     }
 
