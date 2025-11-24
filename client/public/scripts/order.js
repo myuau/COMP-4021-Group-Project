@@ -177,7 +177,6 @@ function renderOrders() {
 
 function checkEmptyList() {
     if (playerAttribute.list.length === 0) {
-        console.log("List empty! Generating a guaranteed order.");
         addNewOrder();
     }
 }
