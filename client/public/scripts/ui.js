@@ -357,33 +357,19 @@ const PairupPage = (function(){
             else{
                 $("#countdown").text("Start!");
                 FrontPageAudio.playCountdownNoticeAudio();
-                setTimeout(() => {
-                    UI.hideFront();
-                    fetch("/play-page.html")
-                    .then(res => res.text())
-                    .then(html => {
-                        document.body.innerHTML = html;
+                UI.hideFront();
 
-                        const scripts = document.body.querySelectorAll("script");
-                        for(let i = 0; i < scripts.length; i++){
-                            scripts.forEach(script => {
-                                const newScript = document.createElement('script');
-                                if (script.src) {
-                                    newScript.src = script.src;
-                                } else {
-                                    newScript.textContent = script.textContent;
-                                }
-                                document.body.appendChild(newScript);
-                            });
-                        }
+                Socket.sendGameField({
+                    top: 60,
+                    bottom: 400,
+                    left: 40,
+                    right: 700
+                });
+                Socket.playerReady();
 
-                        history.replace(null, '', "/play-page.html");
-                    })
-                    .catch(e => {
-                        console.error("Fail to load game-play.html content:", e);
-                        location.replace("/play-page.html");
-                    })
-                }, 1000);
+                $("#main-page").html(`
+                    <iframe src="./play-page.html" style="width:100%; height:100vh; border:none;"></iframe>
+                `);
             }
         }
         setTimeout(countdown, 500);

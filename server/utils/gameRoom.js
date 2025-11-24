@@ -120,9 +120,10 @@ const gameRoom = function(groupId, player1, player2, io){
     const syncRemainingTime = function(){
         if (gameStatus.status !== 'playing') return;
 
-        const elapsed = Date.now() - gameStatus.startTime;
-        const remaining = Math.max(0, gameStatus.duration - elapsed);
-        
+        let elapsed = Date.now() - gameStatus.startTime;
+        const remaining = Math.floor(Math.max(0, gameStatus.duration - elapsed) / 1000);
+        elapsed = Math.floow(elapsed / 1000);
+
         io.to(groupId).emit('sync time', {
             remainingTime: remaining,
             elapsedTime: elapsed
@@ -157,7 +158,6 @@ const gameRoom = function(groupId, player1, player2, io){
     };
 
     const handleScore = function(playerId, score){
-        console.log("player score", playerId, score);
         if (players[playerId]) {
             players[playerId].score = score;
             broadcastToOther(playerId, "opponent score", {

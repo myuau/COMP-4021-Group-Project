@@ -2,6 +2,9 @@ const Socket = (function() {
     let socket = null;
     let groupId = null;
 
+    let remaining;
+    let elapsed;
+
     const getSocket = function() {
         return socket;
     };
@@ -28,6 +31,14 @@ const Socket = (function() {
         return groupId;
     }
 
+    const getRemainingTime = function() {
+        return remaining;
+    }
+
+    const getElapsedTime = function() {
+        return elapsed;
+    }
+
     const connect = function() {
         socket = io(BASE_URL, {
             withCredentials: true,
@@ -45,7 +56,8 @@ const Socket = (function() {
         //          {username, userId}
         socket.on("game start", ({startTime, duration, player1, player2}) => {
             // setup the timer in UI
-            // initialize the player and other objects
+            remaining = duration;
+            elapsed = 0;
         });
 
         // get the opponent info
@@ -61,6 +73,9 @@ const Socket = (function() {
         // elapsedTime -- amount of time that was used up
         socket.on("sync time", ({remainingTime, elapsedTime}) => {
             // update the timer in UI
+            console.log(remainingTime);
+            remaining = remainingTime;
+            elapsed = elapsedTime;
         });
 
         // receive the movement of the opponent
@@ -161,6 +176,7 @@ const Socket = (function() {
     // send signal to the server, let server know the player is ready
     // for calculating and synchronizing the time of the game for both players
     const playerReady = function(){
+        console.log("player ready");
         socket.emit("ready");
     }
 
@@ -253,6 +269,8 @@ const Socket = (function() {
         getOpponent,
         getGroupId,
         getPlayerAttribute,
-        getOpponentAttribute
+        getOpponentAttribute,
+        getRemainingTime,
+        getElapsedTime
     };
 })();

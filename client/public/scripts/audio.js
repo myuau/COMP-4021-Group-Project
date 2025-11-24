@@ -40,9 +40,11 @@ const FrontPageAudio = (function(){
     }
 
     const stopPairupWaitAudio = function(){
-        const audio = $("#front-pairup-waiting")[0];
-        audio.pause();
-        audio.currentTime = 0;
+        const audioElement = document.getElementById("front-pairup-waiting");
+        if (audioElement && typeof audioElement.pause === 'function') {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+        }
     }
 
     return { 

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="assets/index.css"/>
     <title>Busy McDonald</title>
 </head>
-    <body>
+    <body id="main-page">
         <!-- Game Start Page -->
         <div class="bg-container">
             <img id="front-bg" class="" src="assets/img/front-background.jpg" alt="Game Front Page Background"/>
@@ -115,7 +115,6 @@
                         FrontPage.hide();
                         FrontPage.showbg();
                         InstructionPage.show();
-                        setTimeout(FrontPageAudio.playbg, 2000);
                     },
                     () => { FrontPage.show(); }
                 );
