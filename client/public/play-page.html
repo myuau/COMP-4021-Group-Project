@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Busy McDonald</title>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <link rel="stylesheet" href="assets/player-page.css">
     <link rel="stylesheet" href="assets/index.css">
@@ -18,7 +20,7 @@
 
         <svg xmlns="http://www.w3.org/2000/svg" id="counter">
             <text x="5%" , y="70%">
-                TIME:<tspan id="time-remaining">150</tspan>
+                TIME:<tspan id="time-remaining">20</tspan>
             </text>
         </svg>
         <svg id="balance-container1">
@@ -3070,11 +3072,12 @@
             40: 'down'
         };
 
-        // Sound
-        const sounds = {
-            background: new Audio("/assets/audio/front-bg-music.mp3"),
-            complete: new Audio("/assets/audio/order-complete.mp3"),
-        };
+                    // Sound
+                    const sounds = {
+                        background: new Audio("/assets/audio/front-bg-music.mp3"),
+                        complete: new Audio("/assets/audio/order-complete.mp3"),
+                    };
+                    Socket.getSounds(sounds);
 
         let playerAttributes = [];
         let playerAttribute = null;
@@ -3140,9 +3143,9 @@
 
             if (overlap(playerBbox, bananaBbox)) {
                 Socket.PlayerTrap();
-                if (player1Bag.length > 0) {
-                    player1Bag.shift();	// remove one item
-                    Socket.updatePlayerBag(player1Bag);
+                if (playerAttribute.bag.length > 0) {
+                    playerAttribute.bag.shift();	// remove one item
+                    Socket.updatePlayerBag(playerAttribute.bag);
                 } else {
                     balance -= 5; // Penalty of $5
                     const playerCash = document.getElementById(playerAttribute.balanceId);
@@ -3228,6 +3231,7 @@
             opponentAttribute = playerAttributes.find(attr => attr.name === 'opponent');
             Socket.getPlayerAttribute(playerAttribute);
             Socket.getOpponentAttribute(opponentAttribute);
+                        Socket.getBanana(banana);
 
             // Banana penalty check
             setInterval(checkBanana, 500);
@@ -3314,6 +3318,7 @@
                                     const playerCash = document.getElementById(playerAttribute.balanceId);
                                     playerCash.textContent = balance;
                                     Socket.updateScore(balance);
+                                                Socket.playerCompleteOrder();
                                 }
                             }
                         }

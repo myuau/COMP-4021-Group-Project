@@ -13,6 +13,8 @@ const Socket = (function() {
     let opponent = null;
     let playerAttribute = null;
     let opponentAttribute = null;
+    let banana = null;
+    let sounds = null;
 
     const getPlayer = function(player) {
         player = player;
@@ -25,6 +27,12 @@ const Socket = (function() {
     }
     const getOpponentAttribute = function(attr) {
         opponentAttribute = attr;
+    }
+    const getBanana = function(bananaObj) {
+        banana = bananaObj;
+    }
+    const getSounds = function(soundsObj) {
+        sounds = soundsObj;
     }
 
     const getGroupId = function() {
@@ -43,6 +51,9 @@ const Socket = (function() {
         socket = io(BASE_URL, {
             withCredentials: true,
             transports: ['websocket', 'polling']
+        }, {
+            withCredentials: true,
+            transports: ['websocket', 'polling']
         });
         socket.on("connect", () => {
             socket.emit("request match");
@@ -56,9 +67,14 @@ const Socket = (function() {
         //          {username, userId}
         socket.on("game start", ({startTime, duration, player1, player2}) => {
             // setup the timer in UI
-            remaining = duration;
-            elapsed = 0;
+            // initialize the player and other objects
         });
+
+        // get the opponent info
+        // username, userId
+        socket.on("opponent info", ({username, userId}) => {
+            // write code inside if you need this endpoint
+        })
 
         // get the opponent info
         // username, userId
@@ -73,9 +89,11 @@ const Socket = (function() {
         // elapsedTime -- amount of time that was used up
         socket.on("sync time", ({remainingTime, elapsedTime}) => {
             // update the timer in UI
-            console.log(remainingTime);
-            remaining = remainingTime;
-            elapsed = elapsedTime;
+            const timer = document.getElementById("time-remaining");
+            timeRemaining = Math.ceil(remainingTime / 1000);
+            gameTimeSoFar = Math.floor(elapsedTime / 1000);
+            timer.textContent = timeRemaining;
+            console.log("time remaining: ", timeRemaining);
         });
 
         // receive the movement of the opponent
@@ -121,7 +139,6 @@ const Socket = (function() {
         // position: {x, y}
         socket.on("update obstacle", ({position}) => {
             // update the position of the obstacle
-            console.log("obstacle position:", position);
             banana.setXY(position.x, position.y);
         });
 
@@ -131,9 +148,11 @@ const Socket = (function() {
             // add trap audio effect
         })
 
-        // receive when the opponent complete an order
         socket.on("opponent complete", () => {
             // add sound effect when the opponent complete an order
+            sounds.complete.pause();
+            sounds.complete.currentTime = 0;
+            sounds.complete.play();
         })
 
         // get the final score
@@ -142,6 +161,19 @@ const Socket = (function() {
         // isTie: boolean
         socket.on("final score", ({ranking, isTie}) => {
             // hide game area, show ranking page
+            endGameTick(gameIntervalId);
+            sounds.background.pause();
+            sounds.complete.pause();
+            const gameArea = document.getElementById("game-container");
+            gameArea.style.display = "none";
+
+            const signoutContainer = document.getElementsByClassName("signout-container ranking"); 
+            const front = document.getElementsByClassName("front ranking");
+            signoutContainer[0].style.visibility = "visible";
+            front[0].style.visibility = "visible";
+
+            console.log("Game over!");
+            RankingPage.show();
             RankingPage.setRanking(ranking, isTie);
             RankingPage.show();
         })
@@ -235,6 +267,26 @@ const Socket = (function() {
         socket.emit("opponent info");
     }
 
+    // send signal to the server when the player complete an order
+    const playerCompleteOrder = function(){
+        socket.emit("complete");
+    }
+
+    // get opponent info from the server
+    const requestOpponent = function(){
+        socket.emit("opponent info");
+    }
+
+    // send signal to the server when the player complete an order
+    const playerCompleteOrder = function(){
+        socket.emit("complete");
+    }
+
+    // get opponent info from the server
+    const requestOpponent = function(){
+        socket.emit("opponent info");
+    }
+
     const endGame = function() {
         socket.emit("end game", {groupId: groupId});
     }
@@ -255,6 +307,12 @@ const Socket = (function() {
         playerSpeedup,
         playerCompleteOrder,
         requestOpponent,
+        playerSpeedup,
+        playerCompleteOrder,
+        requestOpponent,
+        playerSpeedup,
+        playerCompleteOrder,
+        requestOpponent,
         updatePlayerBag,
         updateOrders,
         updateScore,
@@ -269,8 +327,6 @@ const Socket = (function() {
         getOpponent,
         getGroupId,
         getPlayerAttribute,
-        getOpponentAttribute,
-        getRemainingTime,
-        getElapsedTime
+        getOpponentAttribute
     };
 })();
