@@ -3050,7 +3050,6 @@
             left: 40,
             right: 700
         })
-          Socket.updateScore(100);
         }, 2000);
 
                     RankingPage.initialize();
@@ -3159,8 +3158,15 @@
 
                     $(document).ready(function () {
                         // Connection
-                        socket.emit("player ready");
-                        sounds.background.play();
+                        Socket.playerReady();
+                        bgm = sounds.background.play();
+                        if(bgm !== undefined){
+                            bgm.then(() => {
+
+                            }).catch(e=>{
+                                console.error("backgound music error: ", e);
+                            })
+                        }
 
 
                         const user = Authentication.getUser();

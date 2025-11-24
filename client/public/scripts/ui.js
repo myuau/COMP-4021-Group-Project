@@ -359,7 +359,30 @@ const PairupPage = (function(){
                 FrontPageAudio.playCountdownNoticeAudio();
                 setTimeout(() => {
                     UI.hideFront();
-                    location.replace("/play-page.html");
+                    fetch("/play-page.html")
+                    .then(res => res.text())
+                    .then(html => {
+                        document.body.innerHTML = html;
+
+                        const scripts = document.body.querySelectorAll("script");
+                        for(let i = 0; i < scripts.length; i++){
+                            scripts.forEach(script => {
+                                const newScript = document.createElement('script');
+                                if (script.src) {
+                                    newScript.src = script.src;
+                                } else {
+                                    newScript.textContent = script.textContent;
+                                }
+                                document.body.appendChild(newScript);
+                            });
+                        }
+
+                        history.replace(null, '', "/play-page.html");
+                    })
+                    .catch(e => {
+                        console.error("Fail to load game-play.html content:", e);
+                        location.replace("/play-page.html");
+                    })
                 }, 1000);
             }
         }
