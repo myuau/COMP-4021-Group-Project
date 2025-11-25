@@ -35,7 +35,7 @@ const gameRoom = function(groupId, player1, player2, io){
     
     let gameStatus = {
         status: "waiting",
-        duration: 20000, // 3 mins -- 180000s
+        duration: 60000, // 3 mins -- 180000s
         startTime: null,
         endTime: null,
         timer: null,
@@ -103,7 +103,7 @@ const gameRoom = function(groupId, player1, player2, io){
                 }
             });
             
-            setTimeout(startGameTimer, 1000);
+            setTimeout(startGameTimer, 50);
         }
     };
 

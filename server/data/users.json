@@ -14,5 +14,13 @@
   "May": {
     "password": "$2b$10$rMOkxfpuv9Six32pRj//neLQ7PpH7ExIO6ZDZRiiClIGn397VvUja",
     "userId": "3"
+  },
+  "Jack": {
+    "password": "$2b$10$E1oGEY3qCVXds6FHOGJrke47ZmL.CiMeQxwc0ftoyoUrgELe0QtrC",
+    "userId": "4"
+  },
+  "John": {
+    "password": "$2b$10$90aa8kB5yzx81b1l4xZXJellK.vzL2r97C.pQJJNRdkke.OlUPhPe",
+    "userId": "5"
   }
 }

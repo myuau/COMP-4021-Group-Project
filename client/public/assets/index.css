@@ -582,12 +582,12 @@ td.score{
 }
 
 #balance-container2 {
-    z-index: 10;
+    z-index: 100;
     position: absolute;
     height: 10vh;
     width: 25vw;
     top: 5vh;
-    left: 84%;
+    left: 82%;
 }
 
 #balance-container1 text{
