@@ -84,7 +84,7 @@ const gameRoom = function(groupId, player1, player2, io){
 
     const startGame = function(){
         if (Object.values(players).every(player => player.ready)) {
-            gameStatus.startTime = Date.now();
+            gameStatus.startTime = Date.now() + 1000;
             gameStatus.status = "playing";
 
             const ids = Object.keys(players);
@@ -103,11 +103,13 @@ const gameRoom = function(groupId, player1, player2, io){
                 }
             });
             
-            setTimeout(startGameTimer, 50);
+            setTimeout(startGameTimer, 1000);
         }
     };
 
     const startGameTimer = function(){
+        syncRemainingTime();
+
         gameStatus.timer = setTimeout(() => {
             handleEndGame();
         }, gameStatus.duration);

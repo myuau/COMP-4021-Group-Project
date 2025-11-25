@@ -668,6 +668,11 @@ const GamePage = (function(){
 
         checkEmptyList();
         gameIntervalId = requestAnimationFrame(gameTick);
+
+        if(!ready){
+            Socket.playerReady();
+            ready = true;
+        }
     };
 
     function doFrame(now) {
@@ -712,11 +717,6 @@ const GamePage = (function(){
                 playerCash.textContent = balance;
                 Socket.updateScore(balance);
             }
-        }
-
-        if(!ready){
-            Socket.playerReady();
-            ready = true;
         }
     }
 
