@@ -726,7 +726,6 @@ const GamePage = (function(){
         }
         
         if (sounds) {
-            sounds.background.pause();
             sounds.complete.pause();
         }
         
