@@ -1,5 +1,4 @@
-# COMP-4021-Group-Project
-COMP 4021 Group Project -- Busy McDonald
+# COMP 4021 Group Project -- Busy McDonald
 
 # Introduction
 
@@ -72,7 +71,7 @@ If you visit them with the same computer,
 you can visit the client side with "localhost:8000", and visit the server side with "localhost:3000".
 
 Otherwise, you need to do additional step to enter the game website.
-1. Update client side BASE_URL
+1. Update client side <code>BASE_URL</code>
 
 Edit "client/public/scripts/constant.js",
 
