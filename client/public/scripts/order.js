@@ -9,31 +9,31 @@ const ORDER_POOL = [
     { 
         type: "fried chips", 
         basePrice: 15, 
-        baseDueTime: 8000, 
+        baseDueTime: 12000, 
         ingredients: ["fried chips"] 
     },
     { 
         type: "coke", 
         basePrice: 10, 
-        baseDueTime: 8000, 
+        baseDueTime: 12000, 
         ingredients: ["coke"] 
     },
     { 
         type: "Fish-O-Filet", 
         basePrice: 25, 
-        baseDueTime: 12000, 
+        baseDueTime: 18000, 
         ingredients: ["bread", "lettuce", "cheese", "fish"] 
     },
     { 
         type: "McSpicy", 
         basePrice: 30, 
-        baseDueTime: 12000, 
+        baseDueTime: 18000, 
         ingredients: ["bread", "lettuce", "cheese", "chicken"] 
     },
     { 
         type: "Beef Burger", 
         basePrice: 30, 
-        baseDueTime: 14000, 
+        baseDueTime: 18000, 
         ingredients: ["bread", "lettuce", "cheese", "beef"] 
     }
 ];
