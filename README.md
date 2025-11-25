@@ -35,6 +35,10 @@ If a player picks up the wrong items, they can drop items to the rubbish bin in 
 
 The player can submit the ingredients when they are <strong>in front of the cashier</strong> in fulfilment of the orders with <strong>'E' key</strong>.
 
+- <h3>Cheat Mode</h3>
+
+The player can speed up with <strong>Space Bar</strong>, so that they can collect the required ingredient quickly and complete a order with a shorter amount of time. 
+
 
 # Installation
 
