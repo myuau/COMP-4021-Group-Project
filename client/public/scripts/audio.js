@@ -77,4 +77,4 @@ const RankingPageAudio = (function(){
         playGameOverbgm,
         stopGameOverbgm
     }
-})
+})();

@@ -212,6 +212,8 @@ const PairupPage = (function(){
     const initialize = function(){
         $("#cancel-match").click((e) => {
             e.preventDefault();
+            FrontPageAudio.playBtnAudio();
+
             if (isFinding) {
                 cancelFinding();
             }
@@ -381,6 +383,7 @@ const RankingPage = (function(){
         $("#pairup-bg-filter").hide();
         $(".signout-btn.ranking").click((e) => {
             e.preventDefault();
+            FrontPageAudio.playBtnAudio();
 
             Socket.endGame();
             Socket.disconnect();
@@ -388,7 +391,10 @@ const RankingPage = (function(){
             location.reload();
         });
 
-        $("#new-game").click(() => {
+        $("#new-game").click((e) => {
+            e.preventDefault();
+            FrontPageAudio.playBtnAudio();
+
             Socket.endGame();
             hide();
             location.reload();
@@ -440,7 +446,7 @@ const RankingPage = (function(){
 const GamePage = (function(){
     let ready = false;
     let totalGameTime = 150;
-    let cv, context, gameArea, STATIC_BOUNDARIES_AS_BOXES, banana;
+    let cv, context, gameArea, STATIC_BOUNDARIES_AS_BOXES, banana, cvc, contextc, characterArea;
     let playerAttributes = [];
     let playerAttribute = null;
     let opponentAttribute = null;
@@ -483,8 +489,6 @@ const GamePage = (function(){
             }
         });
 
-        banana = obstacle(context, 427, 350);
-        banana.setSrc('assets/img/banana.png');
         const dir_map = {
             37: 'left',
             38: 'up',
@@ -498,19 +502,23 @@ const GamePage = (function(){
         };
         Socket.setSounds(sounds);
 
-        player = Player(context, 350, 240, gameArea);
-        opponent = Player(context, 500, 240, gameArea);
+        cvc = $('canvas').get(1);
+        contextc = cvc.getContext('2d');
+        characterArea = BoundingBox(contextc, 60, 40, 400, 760);
+
+        banana = obstacle(contextc, 427, 350);
+        banana.setSrc('assets/img/banana.png');
+
+        player = Player(contextc, 350, 240, characterArea);
+        opponent = Player(contextc, 500, 240, characterArea);
         Socket.setPlayer(player);
         Socket.setOpponent(opponent);
         player.setBoxes(STATIC_BOUNDARIES_AS_BOXES);
         opponent.setBoxes(STATIC_BOUNDARIES_AS_BOXES);
 
-        const user = Authentication.getUser();
-        console.log("User: ", user);
-        const MyId = user.userId;
-        console.log("Player id: ", MyId);
-        
-        if (MyId % 2 == 0) {
+        const MyId = Socket.getRole();
+
+        if (MyId === 1) {
             player.setSpriteSheet("assets/img/sprite-sheet-blue.png");
             player.setXY(400, 240);
             opponent.setSpriteSheet("assets/img/sprite-sheet-green.png");
@@ -676,7 +684,7 @@ const GamePage = (function(){
 
         player.update(now);
         opponent.update(now);
-        context.clearRect(0, 0, cv.width, cv.height);
+        contextc.clearRect(0, 0, cvc.width, cvc.height);
         banana.draw();
         player.draw();
         opponent.draw();

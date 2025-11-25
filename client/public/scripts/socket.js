@@ -1,7 +1,7 @@
 const Socket = (function() {
     let socket = null;
     let currGroupId = null;
-    let gameStart = false;
+    let role = null;
     let player = null;
     let opponent = null;
 
@@ -15,6 +15,7 @@ const Socket = (function() {
     let opponentAttribute = null;
     let banana = null;
     let sounds = null;
+    let bananaSound = new Audio("assets/audio/banana.mp3");
 
     // setters functions
     const setPlayer = function(p) {
@@ -39,6 +40,9 @@ const Socket = (function() {
     // getter functions
     const getCurrGroupId = function() {
         return currGroupId;
+    }
+    const getRole = function(){
+        return role;
     }
 
     const connect = function() {
@@ -158,6 +162,8 @@ const Socket = (function() {
         socket.on("opponent trap", () => {
             // update the opponent animation
             // add trap audio effect
+            bananaSound.currentTime = 0;
+            bananaSound.play();
         })
 
         socket.on("opponent complete", () => {
@@ -188,6 +194,7 @@ const Socket = (function() {
             }
             RankingPage.setRanking(ranking, isTie);
             RankingPage.show();
+            endGame();
         })
 
         // get group information after pairup
@@ -197,6 +204,7 @@ const Socket = (function() {
         // yourRole -- '1' - current player, '2' - opponent
         socket.on("match success", ({groupId, players, yourRole}) => {
             currGroupId = groupId;
+            role = yourRole;
             PairupPage.showMatched();
         });
     };
@@ -322,6 +330,7 @@ const Socket = (function() {
         setOpponentAttribute,
         setSounds,
         setBanana,
+        getRole
     };
 })();
 
