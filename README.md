@@ -20,19 +20,22 @@ However, the banana will randomly appear on the floor. If the players step on it
 
 # Game Operation
 
-
 1. Movement
-<br>
+
 The player can move around the game field with 'up', 'down', 'left' and 'right' keys.
 <br>
 2. Pick Item
+
 The player can pick item when they are <strong>in front of the cabinet</strong> with 'E' key. 
 <br>
-3. Drop Item
+3. Drop 
+
 If a player picks up the wrong items, they can drop items to the rubbish bin in FIFO (First In, First Out) order. The player can drop item when they are <strong>in front of the rubbish bin</strong> with 'E' key.
 <br>
 4. Submit Ingredients
+
 The player can submit the ingredients when they are <strong>in front of the cashier</strong> in fulfilment of the orders with 'E' key.
+
 
 # Installation
 <br>
