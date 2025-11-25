@@ -22,5 +22,29 @@
   "John": {
     "password": "$2b$10$90aa8kB5yzx81b1l4xZXJellK.vzL2r97C.pQJJNRdkke.OlUPhPe",
     "userId": "5"
+  },
+  "Jane": {
+    "password": "$2b$10$0PToo9DayPj.lqpavzidsejDFf/my1HzW6cr3pMOT33Ng4k3Wwm0e",
+    "userId": "6"
+  },
+  "Trump": {
+    "password": "$2b$10$hW5YLg0pJOYIvr3wKazwM.VntO.KRA0poNM7o.M0Ctp6iD5HDgYZe",
+    "userId": "7"
+  },
+  "Jerry": {
+    "password": "$2b$10$gQKN1TBZ73u9i.M.xMxwsehl7l.YaRWJ41dUUhAyS4Ss3bPsgU/8S",
+    "userId": "8"
+  },
+  "Terry": {
+    "password": "$2b$10$W37JDAXmlN/6oTiLyiCUu.WfJPsjo1rpjPjvUGwwQQMbldegpfm3q",
+    "userId": "9"
+  },
+  "Joe": {
+    "password": "$2b$10$OsruBgWQntFL9OAFMkGCCermm9/qbQ5/kTto4KuZrQlQoWTii2Voe",
+    "userId": "10"
+  },
+  "Tom": {
+    "password": "$2b$10$vyXfCbvH1zCgVerhIic1u.OnyZ0mhRuuYoCe10TZa8tGEbHlkXTHe",
+    "userId": "11"
   }
 }

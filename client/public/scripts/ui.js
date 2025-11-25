@@ -499,6 +499,7 @@ const GamePage = (function(){
         sounds = {
             background: new Audio("/assets/audio/front-bg-music.mp3"),
             complete: new Audio("/assets/audio/order-complete.mp3"),
+            banana: new Audio("/assets/audio/banana.mp3")
         };
         Socket.setSounds(sounds);
 
@@ -708,6 +709,8 @@ const GamePage = (function(){
 
         if (overlap(playerBbox, bananaBbox)) {
             Socket.PlayerTrap();
+            sounds.banana.currentTime = 0;
+            sounds.banana.play();
             if (playerAttribute.bag.length > 0) {
                 playerAttribute.bag.shift();
                 Socket.updatePlayerBag(playerAttribute.bag);
