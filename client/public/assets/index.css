@@ -52,11 +52,13 @@ html, body {
     position: absolute;
     top: 60%;
     left: 40%;
-    width: 300px;
-    height: 100px;
+    width: 15%;
+    min-width: 300px;
+    height: 11%;
+    min-width: 100px;
     background-color: var(--front-caption-color);
     color: #ffffff;
-    font-size: 50px;
+    font-size: 5vh;
     font-weight: bold;
     border-radius: 15px 15px;
     border: solid 2px #000000;
@@ -376,16 +378,16 @@ p.cheat{
 
 .signout-container{
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: 20px;
+    top: 20px;
 }
 
 .signout-btn{
     padding: 10%;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.3);
-    width: 35px;
-    height: 35px;
+    width: 50px;
+    height: 50px;
     transition: background-color 0.5s;
 }
 

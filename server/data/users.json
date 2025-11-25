@@ -46,5 +46,13 @@
   "Tom": {
     "password": "$2b$10$vyXfCbvH1zCgVerhIic1u.OnyZ0mhRuuYoCe10TZa8tGEbHlkXTHe",
     "userId": "11"
+  },
+  "candy": {
+    "password": "$2b$10$BadabxHvOueRxg1EixODIOvrfJcRVN66/Tq4evoDzULC3tBufdUO2",
+    "userId": "12"
+  },
+  "Mary": {
+    "password": "$2b$10$EifYWJ.j2Zqq6jKXDeMW9.Lw86zuKHj.4HlZ0aGNSoS.2m5u8K0wS",
+    "userId": "13"
   }
 }
