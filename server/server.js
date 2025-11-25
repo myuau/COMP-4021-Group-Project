@@ -25,7 +25,7 @@ const gameSession = session({
 app.use(gameSession);
 
 app.use(cors({
-    origin: 'http://localhost:8000',
+    origin: ['http://localhost:8000', 'http://10.89.162.124:8000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
@@ -35,7 +35,7 @@ app.use(express.json());
 
 const io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:8000",
+        origin: ["http://localhost:8000", 'http://10.89.162.124:8000'],
         methods: ["GET", "POST"],
         credentials: true
     }
