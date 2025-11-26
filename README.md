@@ -79,6 +79,11 @@ This application is a single-page-application, only one html file is needed for 
 The server is implemented with node.js and WebSocket.
 
 
+# API 
+
+You can view the details of all the API involved in this application in "API.pdf".
+
+
 # Installation
 
 

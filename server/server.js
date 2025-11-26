@@ -163,26 +163,6 @@ app.get("/validate", (req, res) => {
     }
 });
 
-app.get("/user/:userId", (req, res) => {
-    let userData = fs.readFileSync("data/users.json", {encoding: "utf-8"});
-    let users = JSON.parse(userData);
-
-    let target = Object.keys(users).filter(ele => ele === req.param.userId);
-
-    if(target){
-        return res.json({
-            status: "success",
-            data: users[target]
-        });
-    }
-    else{
-        return res.json({
-            status: "error",
-            error: "The required user is not found."
-        })
-    }
-})
-
 app.get("/signout", (req, res) => {
     req.session.user = null;
 
